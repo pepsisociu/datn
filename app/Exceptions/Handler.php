@@ -40,31 +40,11 @@ class Handler extends ExceptionHandler
         });
     }
 
-    /**
-     * Throwable message
-     *
-     * @param $request
-     * @param Exception|Throwable $e
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
-     */
-    public function render($request, Exception|Throwable $e)
+    public function render($request, Throwable $exception)
     {
-        if ($e instanceof RoleAdminException){
-            return $this->handleRoleAdminException($request, $e);
-        } else{dd($e->getMessage());
-            return redirect(route('screen_home'));
-        }        
-    }
-
-        
-    /**
-     * Handle role admin exception
-     *
-     * @param  mixed $request
-     * @param  mixed $e
-     * @return void
-     */
-    public function handleRoleAdminException($request, $e){
-        return redirect(route('screen_admin_login'))->with('message', $e->getMessage());  
+        if ($exception instanceof RoleAdminException) {
+            return redirect(route('screen_admin_login'))->with('message', $exception->getMessage());
+        }
+        return redirect(route('screen_login'))->with('message', $exception->getMessage());
     }
 }

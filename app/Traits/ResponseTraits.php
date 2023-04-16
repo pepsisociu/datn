@@ -27,19 +27,25 @@ trait ResponseTraits
     }
 
     /**
-     * Get role auth
+     * Check role manager
      *
-     * @return mixed
+     * @return bool
+     * @throws RoleAdminException
      */
-    public function getMyRole()
+    public function checkRoleManager()
     {
-        return Auth::user()->role->name;
+        $auth = new AuthController();
+        if (Auth::user()->role->name === $auth->manager) {
+            return true;
+        }
+        Throw new RoleAdminException();
     }
 
     /**
      * Check role admin
      *
-     * @return void
+     * @return bool
+     * @throws RoleAdminException
      */
     public function checkRoleAdmin()
     {
@@ -47,7 +53,7 @@ trait ResponseTraits
         if (Auth::user()->role->name === $auth->admin ||
             Auth::user()->role->name === $auth->manager) {
             return true;
-        } 
+        }
         Throw new RoleAdminException();
     }
 
@@ -66,10 +72,10 @@ trait ResponseTraits
     /**
      * Response data
      *
-     * @param  mixed $status
-     * @param  mixed $message
-     * @param  mixed $data
-     * @return void
+     * @param $status
+     * @param $message
+     * @param $data
+     * @return array
      */
     public function responseData($status = null, $message = null, $data = null)
     {

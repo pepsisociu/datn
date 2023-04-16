@@ -77,6 +77,19 @@ trait ValidateTraits
     }
 
     /**
+     * Validate brand
+     *
+     * @param $request
+     * @return void
+     */
+    public function validateBrand($request)
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+    }
+
+    /**
      * Validate product
      *
      * @param $request
@@ -86,7 +99,39 @@ trait ValidateTraits
     {
         $request->validate([
             'name' => 'required',
+            'brand' => 'required',
             'category' => 'required',
+            'price' => 'required',
+        ]);
+    }
+
+    /**
+     * Validate product
+     *
+     * @param $request
+     * @return void
+     */
+    public function validateAccount($request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'username' => 'required',
+            'phone' => 'required',
+        ]);
+    }
+
+    /**
+     * Validate product
+     *
+     * @param $request
+     * @return void
+     */
+    public function validateDetailInvoiceImport($request)
+    {
+        $request->validate([
+            'product' => 'required',
+            'quantity' => 'required',
             'price' => 'required',
         ]);
     }

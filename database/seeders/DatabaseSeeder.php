@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $dataRole = [
+         $dataRole = [
             [
                 'id' => 1,
                 'name' => 'admin',
@@ -32,9 +32,10 @@ class DatabaseSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => Str::random(10),
-                'email' => 'admin@gmail@gmail.com',
+                'email' => 'admin@gmail.com',
                 'password' => Hash::make('123456'),
                 'username'=> 'admin',
+                'phone'=> '234',
                 'role_id' => 1,
             ],
             [
@@ -43,6 +44,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('123456'),
                 'username'=> 'user',
+                'phone'=> '345',
                 'role_id' => 2,
             ],
         ];

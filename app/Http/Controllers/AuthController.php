@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
 use App\Traits\ResponseTraits;
@@ -14,11 +15,16 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
-use Illuminate\Http\JsonResponse;
 use Exception;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
+use App\Exceptions\RoleAdminException;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\InvoiceExport;
+use App\Models\SideBar;
 
 class AuthController extends Controller
 {
@@ -27,7 +33,9 @@ class AuthController extends Controller
     public $manager;
     public $admin;
     public $user;
-
+    private $modelUser;
+    private $modelInvoiceExport;
+    
     /**
      * Constructor
      *
@@ -35,9 +43,11 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->manager  = Config::get('auth.roles.manager');
-        $this->admin    = Config::get('auth.roles.admin');
-        $this->user     = Config::get('auth.roles.user');
+        $this->manager = Config::get('auth.roles.manager');
+        $this->admin = Config::get('auth.roles.admin');
+        $this->user = Config::get('auth.roles.user');
+        $this->modelUser = new User();
+        $this->modelInvoiceExport = new InvoiceExport();
     }
 
     // Admin
@@ -53,7 +63,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Credential login
+     * Login admin
      *
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
@@ -63,17 +73,18 @@ class AuthController extends Controller
         try {
             $this->validateLogin($request);
             $credentials = request(['username', 'password']);
-            if (!Auth::attempt($credentials)) {
-                return redirect(route('screen_admin_login'))->with("message", "Email or password is wrong!");
-            }
-            $user = User::where('username', $request->username)->first();
-            if (!Hash::check($request->password, $user->password, [])) {
-                return redirect(route('screen_admin_login'))->with('message', 'Username or passwword is wrong!');
+            $user = User::where([
+                ['username', $request->username],
+                ['is_deleted', false]])
+                ->first();
+            if (!Auth::attempt($credentials) || !$user) {
+                $message = Lang::get('message.wrong_email_password');
+                return redirect(route('screen_admin_login'))->with('message', $message);
             }
             $user->createToken('authToken')->plainTextToken;
             return redirect(route('screen_admin_home'));
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -99,7 +110,8 @@ class AuthController extends Controller
             $this->validateForgotPassword($request);
             $user = User::where('email', $request->email)->first();
             if ($user->role->name !== 'admin') {
-                return back()->with('message', 'Role must admin!');
+                $message = Lang::get('message.not_have_role');
+                return back()->with('message', $message);
             }
             $token = Str::random('35');
             $user->remember_token = $token;
@@ -109,11 +121,12 @@ class AuthController extends Controller
             $data = array("name" => $user->name, "body" => $link_reset_pass, "email" => $user->email);
 
             Mail::send('mail.mail_forgot_password', $data, function ($message) use ($data) {
-                $message->to($data['email'])->subject('Reset password');
+                $message->to($data['email'])->subject(Lang::get('message.reset_pass'));
             });
-            return back()->with('message', 'Check your mail.');
+            $message = Lang::get('message.check_mail');
+            return back()->with('message', $message);
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -141,20 +154,23 @@ class AuthController extends Controller
             $user = User::where([
                 ['email', $request->email],
                 ['remember_token', $request->token]
-                ])->first();
+            ])->first();
 
             if ($user) {
                 if ($user->role->name !== 'admin') {
-                    return back()->with('message', 'Role must admin!');
+                    $message = Lang::get('message.check_mail');
+                    return back()->with('message', $message);
                 }
                 $user->password = Hash::make($request->password);
                 $user->remember_token = Str::random('35');
                 $user->save();
-                return redirect(route('screen_admin_login'))->with('message', 'Reset password successfully.');
+                $message = Lang::get('message.reset_pass_done');
+                return redirect(route('screen_admin_login'))->with('message', $message);
             }
-            return back()->with('message', 'Link expired!');
+            $message = Lang::get('message.link_expired');
+            return back()->with('message', $message);
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -162,6 +178,7 @@ class AuthController extends Controller
      * Request screen home
      *
      * @return Application|Factory|View
+     * @throws RoleAdminException
      */
     public function indexAdmin()
     {
@@ -173,13 +190,13 @@ class AuthController extends Controller
      * Logout
      *
      * @return Application|RedirectResponse|Redirector
+     * @throws RoleAdminException
      */
     public function logoutAdmin()
     {
         $this->checkRoleAdmin();
         Auth::guard('web')->logout();
         return redirect(route('screen_admin_login'));
-
     }
 
 
@@ -207,22 +224,32 @@ class AuthController extends Controller
             $this->validateRegister($request);
 
             $roles = Role::where('name', 'user')->first();
-            $user = User::create([
-                'email' => $request->email,
-                'name' => $request->name,
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'role_id' => $roles->id
-            ]);
-            $credentials = request(['username', 'password']);
-            if (!Auth::attempt($credentials)) {
-                return redirect(route('screen_admin_login'))->with("message", "Email or password is wrong!");
+            $checkEmail = User::where('email', $request->email)->first();
+            $checkUserName = User::where('username', $request->username)->first();
+            if ($checkEmail) {
+                $message = Lang::get('message.exist_email');
+            } elseif ($checkUserName) {
+                $message = Lang::get('message.exist_username');
+            } else {
+                $user = User::create([
+                    'email' => $request->email,
+                    'name' => $request->name,
+                    'username' => $request->username,
+                    'password' => Hash::make($request->password),
+                    'role_id' => $roles->id
+                ]);
+                $credentials = request(['username', 'password']);
+                if (!Auth::attempt($credentials)) {
+                    $message = Lang::get('message.wrong_email_password');
+                    return redirect(route('screen_login'))->with("message", $message);
+                }
+                $user->createToken('authToken')->plainTextToken;
+    
+                return redirect(route('screen_home'));
             }
-            $user->createToken('authToken')->plainTextToken;
-
-            return redirect(route('screen_admin_home'));
+            return back()->with('message', $message);
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -249,12 +276,13 @@ class AuthController extends Controller
             $credentials = request(['username', 'password']);
             $user = User::where('username', $request->username)->first();
             if (!Auth::attempt($credentials) || $user->role->name !== $this->user) {
-                return back()->with("message", "Username or password is wrong!");
+                $message = Lang::get('message.wrong_email_password');
+                return redirect(route('screen_login'))->with("message", $message);
             }
             $user->createToken('authToken')->plainTextToken;
             return redirect(route('screen_home'));
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -265,7 +293,18 @@ class AuthController extends Controller
      */
     public function index()
     {
-        return view('user.home');
+        $products = Product::where([['active', '1'], ['is_deleted', '0']])->orderBy('id', 'desc')->get();
+        $brands = Brand::all();
+        $categories = Category::all();
+        $response = $this->modelInvoiceExport->getProductPaidFromInvoiceExport(date('Y-m-d', strtotime('-3 months')), date('Y-m-d', strtotime('now')));
+        $productsMax = $response['data'];
+        arsort($productsMax);
+        $sidebars = SideBar::orderBy('id', 'desc')->get();
+        return view('user.home')->with('products', $products)
+                                ->with('brands', $brands)
+                                ->with('categories', $categories)
+                                ->with('productsMax', $productsMax)
+                                ->with('sidebars', $sidebars);
     }
 
     /**
@@ -278,7 +317,6 @@ class AuthController extends Controller
         return view('user.forgot_password');
     }
 
-
     /**
      * Credential email
      *
@@ -289,7 +327,11 @@ class AuthController extends Controller
     {
         try {
             $this->validateForgotPassword($request);
-            $user = User::where('email', $request->email)->first();
+            $role = Role::where([['name', $this->user]])->first();
+            $user = User::where([['email', $request->email], ['role_id', $role->id]])->first();
+            if (!isset($user)){
+                return back()->with('message', Lang::get('message.can_not_find'));
+            }
             $token = Str::random('35');
             $user->remember_token = $token;
             $user->save();
@@ -297,12 +339,13 @@ class AuthController extends Controller
             $link_reset_pass = url('reset-password?email=' . $user->email . '&remember_token=' . $token);
             $data = array("name" => $user->name, "body" => $link_reset_pass, "email" => $user->email);
 
-            Mail::send('mail.mail_forgot_password', $data, function ($message) use ($data) {
-                $message->to($data['email'])->subject('Reset password');
+            Mail::send('mail.mail_forgot_password', $data, function ($messages) use ($data) {
+                $messages->to($data['email'])->subject(Lang::get('message.reset_pass'));
             });
-            return back()->with('message', 'Check your mail.');
+            $message = Lang::get('message.check_mail');
+            return back()->with('message', $message);
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -329,19 +372,20 @@ class AuthController extends Controller
             $this->validateResetPassword($request);
             $user = User::where([
                 ['email', $request->email],
-                ['remember_token', $request->token]
-            ])
+                ['remember_token', $request->token]])
                 ->first();
 
             if ($user) {
                 $user->password = Hash::make($request->password);
                 $user->remember_token = Str::random('35');
                 $user->save();
-                return redirect(route('screen_login'))->with('message', 'Reset password successfully.');
+                $message = Lang::get('message.reset_pass_done');
+                return redirect(route('screen_login'))->with('message', $message);
             }
-            return back()->with('message', 'Link expired!');
+            $message = Lang::get('message.link_expired');
+            return back()->with('message', $message);
         } catch (Exception $e) {
-            return back()->with('message', $e->getMessage() . '!');
+            return back()->with('message', $e->getMessage());
         }
     }
 
@@ -356,110 +400,66 @@ class AuthController extends Controller
         return redirect(route('screen_home'));
     }
 
-    // API
-
     /**
-     * Api credential login admin
+     * Init screen info user
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @return Application|RedirectResponse|Redirector
      */
-    public function apiLoginAdmin(Request $request)
+    public function initScreenInfo()
     {
         try {
-            $this->validateLogin($request);
-            $credentials = request(['username', 'password']);
-            if (!Auth::attempt($credentials)) {
-                return $this->responseAuth(400, 'Email or password is wrong');
+            if (Auth::user()->role->name === $this->user) {
+                $user = User::find(Auth::id());
+                $brands = Brand::all();
+                $categories = Category::all();
+                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories);
+            } else {
+                return redirect(route('screen_home'));
             }
-            $user = User::where('username', $request->username)->first();
-            if (!Hash::check($request->password, $user->password, [])) {
-                return $this->responseAuth(400, 'message login');
-            }
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
-
-            return $this->responseAuth(200, 'Success', $tokenResult);
         } catch (Exception $e) {
-            return $this->responseAuth(400, $e->getMessage());
+            return redirect(route('screen_home'));
         }
     }
 
     /**
-     * Api logout admin
+     * Update info user
      *
-     * @return JsonResponse
+     * @return Application|RedirectResponse|Redirector
      */
-    public function apiLogoutAdmin()
-    {
-        Auth::user()->tokens()->delete();
-        return $this->responseAuth(200, 'Success');
-    }
-
-    /**
-     * Api credential register user
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function apiRegister(Request $request)
+    public function updateInfo(Request $request)
     {
         try {
-            $this->validateRegister($request);
-
-            $roles = Role::where('name', 'user')->first();
-            $user = User::create([
-                'email' => $request->email,
-                'name' => $request->name,
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'role_id' => $roles->id
-            ]);
-            $credentials = request(['username', 'password']);
-            if (!Auth::attempt($credentials)) {
-                return $this->responseAuth(400, 'Email or password is wrong');
+            if ($this->checkRoleUser()) {
+                $response = $this->modelUser->updateInfo($request);
+                $message = $response['message'];
+            } else {
+                $message = Lang::get('message.not_have_role');
+                return redirect(route('screen_admin_login'))->with('message', $message);
             }
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
-
-            return $this->responseAuth(200, $tokenResult);
         } catch (Exception $e) {
-            return $this->responseAuth(400, $e->getMessage());
+            $message = $e->getMessage();
         }
+        return back()->with('message', $message);
     }
 
     /**
-     * Api credential login
+     * Change info user
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @return Application|RedirectResponse|Redirector
      */
-    public function apiLogin(Request $request)
+    public function changePassword(Request $request)
     {
         try {
-            $this->validateLogin($request);
-            $credentials = request(['username', 'password']);
-            if (!Auth::attempt($credentials)) {
-                return $this->responseAuth(400, 'Email or password is wrong');
+            if ($this->checkRoleUser()) {
+                $response = $this->modelUser->changePassword($request);
+                $message = $response['message'];
+            } else {
+                $message = Lang::get('message.not_have_role');
+                return redirect(route('screen_admin_login'))->with('message', $message);
             }
-            $user = User::where('username', $request->username)->first();
-            if (!Hash::check($request->password, $user->password, [])) {
-                return $this->responseAuth(400, 'Error login');
-            }
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
-
-            return $this->responseAuth(200, 'Success', $tokenResult);
         } catch (Exception $e) {
-            return $this->responseAuth(400, $e->getMessage());
+            $message = $e->getMessage();
         }
-    }
-
-    /**
-     * Api logout
-     *
-     * @return JsonResponse
-     */
-    public function apiLogout()
-    {
-        Auth::user()->tokens()->delete();
-        return $this->responseAuth(200, 'Success');
+        return back()->with('message', $message);
     }
 }
