@@ -132,7 +132,7 @@ class UserController extends Controller
 
         return view('user.product.brand', compact('categories', 'brands', 'product'));
     }
-    
+
     /**
      * Init screen detail product
      *
@@ -213,7 +213,7 @@ class UserController extends Controller
         $categories = Category::all();
         return view('user.cart.detail', compact('products', 'message', 'user', 'brands', 'categories'));
     }
-    
+
 
     /**
      * Delete cart
