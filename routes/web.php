@@ -12,6 +12,7 @@ use App\Http\Controllers\SideBarController;
 use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +65,9 @@ Route::prefix('admin')->group(function () {
         Route::resource('brand',                            BrandController::class,                                     ['names' => 'admin.brand']);
         Route::resource('category',                         CategoryController::class,                                  ['names' => 'admin.category']);
         Route::resource('product',                          ProductController::class,                                   ['names' => 'admin.product']);
-        Route::resource('doctor',                           DoctorController::class,                                   ['names' => 'admin.doctor']);
+        Route::resource('doctor',                           DoctorController::class,                                    ['names' => 'admin.doctor']);
+        Route::resource('reservation',                      ReservationController::class,                               ['names' => 'admin.reservation']);
+
 
         //Admin account
         Route::resource('account',                          AdminController::class,                                     ['names' => 'admin.account']);

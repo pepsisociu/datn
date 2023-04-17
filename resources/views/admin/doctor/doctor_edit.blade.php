@@ -101,8 +101,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
+                    <li class="nav-item menu-open">
+                        <a href="#" class="nav-link active">
                             <i class="nav-icon fas fa-user-md"></i>
                             <p>
                                 Bác sĩ
@@ -111,7 +111,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.doctor.index')) }}" class="nav-link">
+                                <a href="{{ URL::to(route('admin.doctor.index')) }}" class="nav-link active">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Danh sách bác sĩ</p>
                                 </a>
@@ -131,8 +131,8 @@
                         </a>
                     </li>
                     <li class="nav-header">Hóa đơn</li>
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-file-download"></i>
                             <p>
                                 Hóa đơn nhập
@@ -141,7 +141,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.invoice_import.index')) }}" class="nav-link active">
+                                <a href="{{ URL::to(route('admin.invoice_import.index')) }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Danh sách hóa đơn</p>
                                 </a>
@@ -242,94 +242,107 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Thông tin hóa đơn</h1>
+                        <h1 class="m-0">Sửa thông tin bác sĩ</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ URL::to(route('screen_admin_home')) }}">Trang
                                     chủ</a></li>
-                            <li class="breadcrumb-item active">Hóa đơn</li>
+                            <li class="breadcrumb-item active">Danh mục sản phẩm</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
+        <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12">
-                        @if (session('message'))
-                            <div class="card-header">
-                                <p class="noti">{{ session('message') }}</p>
-                            </div>
-                        @endif
-                        <!-- Main content -->
-                        <div class="invoice p-3 mb-3">
-                            <!-- Table row -->
-                            <div class="row">
-                                <div class="col-12 table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Số thứ tự</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Số lượng</th>
-                                                <th>Đơn giá</th>
-                                                <th>Thành tiền</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $i = 1; ?>
-                                            @foreach ($invoiceImport->detailInvoiceImport->sortByDesc('created_at') as $key => $detailInvoiceImport)
-                                                <tr>
-                                                    <td>{{ $i++ }}</td>
-                                                    <td> {{ $detailInvoiceImport->product->name }}</td>
-                                                    <td> {{ number_format($detailInvoiceImport->quantity, 0, ',', '.') }}
-                                                    </td>
-                                                    <td> {{ Lang::get('message.before_unit_money') . number_format($detailInvoiceImport->price, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                    </td>
-                                                    <td> {{ Lang::get('message.before_unit_money') . number_format($detailInvoiceImport->into_money, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- jquery validation -->
+                        <div class="card">
+                            @if (session('message'))
+                                <div class="card-header">
+                                    <p class="noti">{{ session('message') }}</p>
                                 </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
-                            <div class="row">
-                                <div class="col-6"></div>
-                                <div class="col-6">
-                                    <p class="lead">Thông tin hóa đơn</p>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tr>
-                                                <th style="width:50%">Tổng tiền</th>
-                                                <td> {{ Lang::get('message.before_unit_money') . number_format($invoiceImport->into_money, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Trạng thái:</th>
-                                                <td>
-                                                    @if ($invoiceImport->status)
-                                                        <span class="badge bg-success">Đã thanh toán</span>
-                                                    @else
-                                                        <span class="badge bg-danger">Chưa thanh toán</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        </table>
+                            @endif
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form id="quickForm" enctype="multipart/form-data"
+                                action="{{ URL::to(route('admin.doctor.update', ['doctor' => $doctor->id])) }}"
+                                method="POST">
+                                @csrf
+                                <input name="_method" type="hidden" value="PUT">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1" class="required">Tên bác sĩ</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+                                            </div>
+                                            <input type="text" name="name" class="form-control" id="exampleInputEmail1"
+                                                value="{{ $doctor->name }}" placeholder="Nhập vào tên danh mục">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="required">Cấp bậc</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-bookmark"></i></span>
+                                            </div>
+                                            <select class="form-control select2bs4" name="level">
+                                                <option selected="selected" disabled>Chọn cấp bậc</option>
+                                                @foreach ($levels as $level)
+                                                    <option value="{{ $level->id }}"
+                                                     @if ($level->id == $doctor->level_id) selected @endif>
+                                                    {{ $level->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Hình ảnh</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                            </div>
+                                            <div class="custom-file">
+                                                <input type="file" name="image" accept="image/*" class="custom-file-input"
+                                                    id="customFile">
+                                                <label class="custom-file-label" for="customFile">Chọn 1 hình
+                                                    ảnh</label>
+                                            </div>
+                                        </div>
+                                        @if ($doctor->image)
+                                        <img class="img-ctr" src="{{ asset('' . $doctor->image) }}" />
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mô tả</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                                            </div>
+                                            <textarea class="form-control" name="description" rows="2" placeholder="Nhập vào mô tả">{{$doctor->description}}</textarea>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
+                                <!-- /.card-body -->
+                                <div class="card-footer text-center">
+                                    <button type="submit" class="btn btn-primary">Lưu</button>
+                                </div>
+                            </form>
                         </div>
-                        <!-- /.invoice -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                        <!-- /.card -->
+                    </div>
+                    <!--/.col (left) -->
+                    <!-- right column -->
+                    <div class="col-md-6"></div>
+                    <!--/.col (right) -->
+                </div>
+                <!-- /.row -->
             </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->

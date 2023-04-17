@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $dataRole = [
+        $dataRole = [
             [
                 'id' => 1,
                 'name' => 'admin',
@@ -24,6 +24,10 @@ class DatabaseSeeder extends Seeder
             [
                 'id' => 2,
                 'name' => 'user',
+            ],
+            [
+                'id' => 3,
+                'name' => 'manager',
             ],
         ];
         DB::table('roles')->insert($dataRole);
@@ -34,8 +38,8 @@ class DatabaseSeeder extends Seeder
                 'name' => Str::random(10),
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('123456'),
-                'username'=> 'admin',
-                'phone'=> '234',
+                'username' => 'admin',
+                'phone' => '234',
                 'role_id' => 1,
             ],
             [
@@ -43,11 +47,48 @@ class DatabaseSeeder extends Seeder
                 'name' => Str::random(10),
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('123456'),
-                'username'=> 'user',
-                'phone'=> '345',
+                'username' => 'user',
+                'phone' => '345',
                 'role_id' => 2,
+            ],
+            [
+                'id' => 3,
+                'name' => Str::random(10),
+                'email' => 'manager@gmail.com',
+                'password' => Hash::make('123456'),
+                'username' => 'manager',
+                'phone' => '345',
+                'role_id' => 3,
             ],
         ];
         DB::table('users')->insert($dataUser);
+
+        $dataLevel = [
+            [
+                'id' => 1,
+                'name' => 'Cử nhân',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Thạc sĩ',
+            ],
+            [
+                'id' => 3,
+                'name' => 'Tiến sĩ',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Trưởng khoa',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Phó giáo sư',
+            ],
+            [
+                'id' => 6,
+                'name' => 'Giáo sư',
+            ],
+        ];
+        DB::table('level')->insert($dataLevel);
     }
 }

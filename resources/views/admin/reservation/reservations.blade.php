@@ -59,7 +59,7 @@
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-th"></i>
                             <p>
-                                Danh mục sản phẩm
+                                Danh mục
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
@@ -80,7 +80,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-list-ul"></i>
+                            <i class="nav-icon fas fa-bars"></i>
                             <p>
                                 Sản phẩm
                                 <i class="right fas fa-angle-left"></i>
@@ -125,14 +125,14 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ URL::to(route('admin.reservation.index')) }}" class="nav-link">
+                        <a href="{{ URL::to(route('admin.reservation.index')) }}" class="nav-link  active">
                             <i class="nav-icon fas fa-calendar-alt"></i>
                             <p>Quản lý lịch hẹn</p>
                         </a>
                     </li>
                     <li class="nav-header">Hóa đơn</li>
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-file-download"></i>
                             <p>
                                 Hóa đơn nhập
@@ -141,7 +141,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.invoice_import.index')) }}" class="nav-link active">
+                                <a href="{{ URL::to(route('admin.invoice_import.index')) }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Danh sách hóa đơn</p>
                                 </a>
@@ -242,95 +242,94 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Thông tin hóa đơn</h1>
+                        <h1 class="m-0">Danh sách lịch hẹn</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ URL::to(route('screen_admin_home')) }}">Trang
                                     chủ</a></li>
-                            <li class="breadcrumb-item active">Hóa đơn</li>
+                            <li class="breadcrumb-item active">Danh sách lịch hẹn</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
+        <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        @if (session('message'))
-                            <div class="card-header">
-                                <p class="noti">{{ session('message') }}</p>
-                            </div>
-                        @endif
-                        <!-- Main content -->
-                        <div class="invoice p-3 mb-3">
-                            <!-- Table row -->
-                            <div class="row">
-                                <div class="col-12 table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Số thứ tự</th>
-                                                <th>Sản phẩm</th>
-                                                <th>Số lượng</th>
-                                                <th>Đơn giá</th>
-                                                <th>Thành tiền</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $i = 1; ?>
-                                            @foreach ($invoiceImport->detailInvoiceImport->sortByDesc('created_at') as $key => $detailInvoiceImport)
-                                                <tr>
-                                                    <td>{{ $i++ }}</td>
-                                                    <td> {{ $detailInvoiceImport->product->name }}</td>
-                                                    <td> {{ number_format($detailInvoiceImport->quantity, 0, ',', '.') }}
-                                                    </td>
-                                                    <td> {{ Lang::get('message.before_unit_money') . number_format($detailInvoiceImport->price, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                    </td>
-                                                    <td> {{ Lang::get('message.before_unit_money') . number_format($detailInvoiceImport->into_money, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                        <div class="card">
+                            @if (session('message'))
+                                <div class="card-header">
+                                    <p class="noti">{{ session('message') }}</p>
                                 </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
-                            <div class="row">
-                                <div class="col-6"></div>
-                                <div class="col-6">
-                                    <p class="lead">Thông tin hóa đơn</p>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tr>
-                                                <th style="width:50%">Tổng tiền</th>
-                                                <td> {{ Lang::get('message.before_unit_money') . number_format($invoiceImport->into_money, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Trạng thái:</th>
-                                                <td>
-                                                    @if ($invoiceImport->status)
-                                                        <span class="badge bg-success">Đã thanh toán</span>
-                                                    @else
-                                                        <span class="badge bg-danger">Chưa thanh toán</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        </table>
+                            @endif
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <form action="{{ URL::to(route('admin.reservation.index')) }}" method="GET">
+                                    <div class="form-group row">
+                                        <label>Chọn thời gian:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" name="date" class="form-control float-right" id="reservation">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- /.col -->
+                                </form>
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Số thứ tự</th>
+                                            <th>Ngày</th>
+                                            <th>Tên bác sĩ</th>
+                                            <th>Tên người đặt</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Thời gian</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i = 1; ?>
+                                        @foreach ($reservations as $key => $reservation)
+                                            <tr>
+                                                <td>{{ $i++ }}</td>
+                                                <td>{{ $reservation->date }}</td>
+                                                <td>{{ $reservation->doctor->name }}</td>
+                                                <td>{{ $reservation->user->name }}</td>
+                                                <td>{{ $reservation->user->phone }}</td>
+                                                <td>{{ $reservation->time }}</td>
+                                                <td>{{ $reservation->status == 1 ? 'Xác nhận' : 'Hủy' }}</td>
+                                                <td class="act">
+                                                    <div class="row pd-12">
+                                                        <a
+                                                            href="{{ URL::to(route('admin.reservation.edit', ['reservation' => $reservation->id])) }}">
+                                                            <i class="fas fa-edit ico"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            <!-- /.row -->
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.invoice -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
         </section>
         <!-- /.content -->
     </div>

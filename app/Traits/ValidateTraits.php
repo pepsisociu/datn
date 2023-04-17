@@ -111,6 +111,20 @@ trait ValidateTraits
      * @param $request
      * @return void
      */
+    public function validateDoctor($request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'level' => 'required',
+        ]);
+    }
+
+    /**
+     * Validate product
+     *
+     * @param $request
+     * @return void
+     */
     public function validateAccount($request)
     {
         $request->validate([

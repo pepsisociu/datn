@@ -31,7 +31,7 @@
                             <p>Trang chủ</p>
                         </a>
                     </li>
-                    <li class="nav-header">Sản phẩm</li>
+                    <li class="nav-header">Thông tin</li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-bookmark"></i>
@@ -100,6 +100,35 @@
                                 </a>
                             </li>
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-user-md"></i>
+                            <p>
+                                Bác sĩ
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ URL::to(route('admin.doctor.index')) }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách bác sĩ</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ URL::to(route('admin.doctor.create')) }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm bác sĩ</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ URL::to(route('admin.reservation.index')) }}" class="nav-link">
+                            <i class="nav-icon fas fa-calendar-alt"></i>
+                            <p>Quản lý lịch hẹn</p>
+                        </a>
                     </li>
                     <li class="nav-header">Hóa đơn</li>
                     <li class="nav-item">
@@ -174,12 +203,6 @@
                             <a href="{{ URL::to(route('admin.account.create')) }}" class="nav-link active">
                                 <i class="nav-icon fas fa-user-plus"></i>
                                 <p>Cấp tài khoản mới</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ URL::to(route('admin.sidebar.index')) }}" class="nav-link">
-                                <i class="nav-icon fas fa-sliders-h"></i>
-                                <p>Side bar</p>
                             </a>
                         </li>
                         <li class="nav-item">
