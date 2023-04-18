@@ -286,8 +286,9 @@
                                                 <option selected="selected" disabled>Chọn bác sĩ</option>
                                                 @foreach ($doctors as $doctor)
                                                     <option value="{{ $doctor->id }}"
-                                                     @if ($doctor->id == $reservation->doctor_id) selected @endif>
-                                                    {{ $doctor->name }}</option>
+                                                        @if ($doctor->id == $reservation->doctor_id) selected @endif>
+                                                        {{ $doctor->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -297,7 +298,7 @@
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" name="status" class="custom-control-input"
                                             id="customSwitch1" @if ($reservation->status) checked @endif>
-                                        <label class="custom-control-label" for="customSwitch1">Xác nhận / Hủy</label>
+                                        <label class="custom-control-label" for="customSwitch1">Xác nhận</label>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->

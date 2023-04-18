@@ -79,9 +79,9 @@ class Doctor extends Model
         try {
             $status = false;
             $message = Lang::get('message.can_not_find');
-            $doctor = Doctor::find($id)->where('active', 1);
+            $doctor = Doctor::find($id);
             $data = null;
-            if ($doctor) {
+            if ($doctor && $doctor->where('active', 1)) {
                 $status = true;
                 $message = null;
                 $data = $doctor;
@@ -142,8 +142,8 @@ class Doctor extends Model
             $status = false;
             $message = Lang::get('message.exist');
             $data = null;
-            $doctor = Doctor::find($id)->where('active', 1);
-            if ($doctor) {
+            $doctor = Doctor::find($id);
+            if ($doctor && $doctor->where('active', 1)) {
                 $doctor->name = $request->name;
                 $doctor->level_id = $request->level;
                 if (isset($request->description)) {

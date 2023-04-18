@@ -2,60 +2,61 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Forgot password</title>
-    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'>
-    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css'>
-    <link rel="stylesheet" href={{ asset('css/style.css') }}>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quên mật khẩu</title>
 
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
 </head>
 
-<body>
-    <!-- partial:index.partial.html -->
-    <div class="container">
-        <div class="screen">
-            <div class="screen__content">
-                <form class="login" method="POST" action="{{ URL::to(route('admin_forgot_password')) }}">
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <!-- /.login-logo -->
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a href="../../index2.html" class="h1"><b>Nha khoa NA</b></a>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ URL::to(route('admin_forgot_password')) }}">
                     {!! csrf_field() !!}
-                    <p class="button title"> Admin </p>
-                    <div class="login__field">
-                        <i class="login__icon fas fa-user"></i>
-                        <input type="email" name="email" class="login__input" placeholder="Email">
-                    </div>
-                    <button type="submit" class="button login__submit">
-                        <span class="button__text">Send mail</span>
-                        <i class="button__icon fas fa-chevron-right"></i>
-                    </button>
-                    <a href="{{ URL::to(route('screen_admin_login')) }}" class="button login__submit">
-                        <span class="button__text">Login</span>
-                        <i class="button__icon fas fa-chevron-left"></i>
-                    </a>
-                </form>
-
-                <div class="social-login">
-                    <h3>log in via</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-login__icon fab fa-instagram"></a>
-                        <a href="#" class="social-login__icon fab fa-facebook"></a>
-                        <a href="#" class="social-login__icon fab fa-twitter"></a>
+                    <div class="input-group mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Email">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
                     </div>
                     @if (session('message'))
-                        <p>{{ session('message') }}</p>
+                        <p>{{session('message')}}</p>
                     @endif
-                </div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary btn-block">Xác nhận</button>
+                    </div>
+                </form>
+                <p class="mb-1">
+                    <a href="{{ URL::to(route('screen_admin_login')) }}">Đăng nhập</a>
+                </p>
             </div>
-
-            <div class="screen__background">
-                <span class="screen__background__shape screen__background__shape4"></span>
-                <span class="screen__background__shape screen__background__shape3"></span>
-                <span class="screen__background__shape screen__background__shape2"></span>
-                <span class="screen__background__shape screen__background__shape1"></span>
-            </div>
+            <!-- /.card-body -->
         </div>
+        <!-- /.card -->
     </div>
-    <!-- partial -->
-
-
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
 </body>
 
 </html>
