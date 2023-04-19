@@ -295,4 +295,22 @@ class User extends Authenticatable
         }
         return $this->responseData($status, $message, $data);
     }
+
+    public function getUserByPhone($request) {
+        try {
+            $users = User::where([
+                ['phone', $request->phone],
+                ['role_id', 3],
+                ['is_deleted', false]])
+                ->first();
+            $status = true;
+            $message = null;
+            $data = $users;
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+            $data = null;
+        }
+        return $this->responseData($status, $message, $data);
+    }
 }

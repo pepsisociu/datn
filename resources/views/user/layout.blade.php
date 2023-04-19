@@ -361,7 +361,7 @@
 {{--    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>--}}
 {{--    <script src="{{ asset('assets/js/templatemo.js') }}"></script>--}}
 {{--    <script src="{{ asset('assets/js/custom.js') }}"></script>--}}
-{{--    <script src="https://www.paypalobjects.com/api/checkout.js"></script>--}}
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 {{--    <!-- End Script -->--}}
 
 {{--    <script src="{{ asset('assets/js/slick.min.js') }}"></script>--}}
@@ -398,7 +398,7 @@
     </script>
     <script>
         var intoMoney = document.getElementById('total').value
-        var total = Math.round((intoMoney / 23083) * 100) / 100
+        var total = Math.round((intoMoney / 23000) * 100) / 100
         total = parseFloat(total)
 
         paypal.Button.render({
@@ -409,9 +409,10 @@
                 production: 'demo_production_client_id'
             },
             // Customize button (optional)
+
             locale: 'en_US',
             style: {
-                size: 'large',
+                size: 'medium',
                 color: 'gold',
                 shape: 'pill',
             },

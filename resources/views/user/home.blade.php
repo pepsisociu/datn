@@ -8,12 +8,12 @@
                 <div class="modal-header border-0">
                     <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body d-flex align-items-center justify-content-center">
+                <form class="modal-body d-flex align-items-center justify-content-center" method="get" action="{{ URL::to(route('reservation')) }}">
                     <div class="input-group" style="max-width: 600px;">
-                        <input type="text" style="background-color: white!important;" class="form-control bg-transparent border-primary p-3" placeholder="Nhập số điện thoại của bạn">
-                        <button class="btn btn-primary px-4"><i class="bi bi-search"></i></button>
+                        <input type="number" style="background-color: white!important;" name="phone" class="form-control bg-transparent border-primary p-3" placeholder="Nhập số điện thoại của bạn">
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-search"></i></button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Doctor;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Comment;
 use App\Models\InvoiceExport;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTraits;
@@ -31,6 +33,9 @@ class UserController extends Controller
     private $modelBrand;
     private $modelInvoiceExport;
     private $modelComment;
+    private $modelUser;
+    private $modelReservation;
+    private $modelDoctor;
 
     /**
      * Constructor
@@ -44,6 +49,9 @@ class UserController extends Controller
         $this->modelBrand = new Brand();
         $this->modelInvoiceExport = new InvoiceExport();
         $this->modelComment = new Comment();
+        $this->modelUser = new User();
+        $this->modelReservation = new Reservation();
+        $this->modelDoctor = new Doctor();
     }
 
     /**
@@ -346,5 +354,28 @@ class UserController extends Controller
     {
         $this->modelComment->addComments($request, $id);
         return back();
+    }
+
+    public function reservation(Request $request) {
+        $response = $this->modelUser->getUserByPhone($request);
+        $message = $response['message'];
+        $user = $response['data'];
+        $phone = $request->phone;
+        $dataDoctor = $this->modelDoctor->getDoctors();
+        $doctors = $dataDoctor['data'];
+        if (!$response['status']) {
+            $message = $response['message'];
+        }
+        return view('user.reservation.reservation', compact('message', 'user', 'phone', 'doctors'));
+    }
+
+    public function createReservation(Request $request) {
+        $response = $this->modelReservation->createReservation($request);
+        $message = $response['message'];
+        $user = $response['data'];
+        if (!$response['status']) {
+            $message = $response['message'];
+        }
+        return view('user.reservation.reservation', compact('message', 'user'));
     }
 }

@@ -68,7 +68,6 @@ Route::prefix('admin')->group(function () {
         Route::resource('doctor',                           DoctorController::class,                                    ['names' => 'admin.doctor']);
         Route::resource('reservation',                      ReservationController::class,                               ['names' => 'admin.reservation']);
 
-
         //Admin account
         Route::resource('account',                          AdminController::class,                                     ['names' => 'admin.account']);
         Route::resource('sidebar',                          SideBarController::class,                                   ['names' => 'admin.sidebar']);
@@ -98,6 +97,9 @@ Route::post('/update-cart',                                 [UserController::cla
 Route::get('/delete-cart/{id}',                             [UserController::class, 'deleteCart'])                      ->name('delete_cart');
 Route::post('/create-order',                                [UserController::class, 'createOrder'])                     ->name('create_order');
 Route::get('/search-order',                                 [UserController::class, 'searchOrder'])                     ->name('search_order');
+Route::get('/reservation',                                  [UserController::class, 'reservation'])                     ->name('reservation');
+Route::post('/search-order',                                [UserController::class, 'createReservation'])               ->name('create_reservation');
+Route::get('/getFreeTime',                                  [ReservationController::class, 'getFreeTime'])              ->name('get_freetime');
 
 //User Authenticate
 Route::group(['middleware' => 'auth:sanctum'], function () {

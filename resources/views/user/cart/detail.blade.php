@@ -1,50 +1,56 @@
 @extends('user.layout')
 @section('user_content')
+    <div class="container-fluid bg-primary py-5 bg-header" style="margin-bottom: 90px;">
+        <div class="row py-5">
+            <div class="col-12 pt-lg-5 mt-lg-5 text-center">
+                <h1 class="display-4 text-white animated zoomIn">Giỏ hàng</h1>
+            </div>
+        </div>
+    </div>
     <section class="bg-light" id="card_container">
         <div class="container d-lg-flex">
-            <div class="box-1 py-3">
+            <div class="box-1 py-3 col-9">
                 <form action="{{ URL::to(route('update_cart')) }}" method="POST" >
                     @csrf
                 <div class="dis list-product info d-flex">
-                    <div class="products">
-                        <?php $total = 0; ?>
-                        @foreach (Cart::content()->groupBy('id')->toArray() as $productCart)
-                            @foreach ($products as $keyProduct => $product)
-                                @if ($productCart[0]['id'] == $product->id)
-                                    <div class="product-item d-flex">
-                                        <div class="product-image">
-                                            <img src="{{ asset('' . $product->image) }}" />
-                                        </div>
-                                        <div class="product-name d-flex">
-                                            <h5>{{ $product->name }}</h5>
-                                            <p style="margin: 0"> Số lượng: {{ $productCart[0]['qty'] }}</p>
-                                            <p style="margin: 0">Đơn giá:
-                                                <span style="font-weight:bold!important">
-                                                    {{ Lang::get('message.before_unit_money') . number_format($productCart[0]['price'], 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                </span>
-                                            </p>
-                                            <p style="margin: 0; font-weigh:bold!important">Thành tiền:
-                                                <span style="font-weight:bold!important">
-                                                    {{ Lang::get('message.before_unit_money') . number_format($productCart[0]['qty'] * $productCart[0]['price'], 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                                                </span>
-                                            </p>
-                                            <?php $total = (int) $total + (int) $productCart[0]['qty'] * (int) $productCart[0]['price']; ?>
-                                        </div>
-                                        <div class="product-event d-flex">
-                                            <div class="d-flex action">
-                                                <p style="margin: 0"> Số lượng: </p>
-                                                <input name= "{{$productCart[0]['rowId']}}" value="{{ $productCart[0]['qty'] }}" min="1" required type="number" id="quantity">
-                                                <a type="button"
-                                                    href="{{ URL::to(route('delete_cart', ['id' => $productCart[0]['rowId']])) }}">
-                                                    <i id="btnMinus" class="fas fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                    <?php $total = 0; ?>
+                    @foreach (Cart::content()->groupBy('id')->toArray() as $productCart)
+                        @foreach ($products as $keyProduct => $product)
+                            @if ($productCart[0]['id'] == $product->id)
+                                <div class="product-image col-2">
+                                    <img src="{{ asset('' . $product->image) }}" style="height: 100px; width:150px"/>
+                                </div>
+                                <div class="product-name d-flex col-7">
+                                    <h5 class="col-3">{{ $product->name }}</h5>
+                                    <p style="margin: 0; padding-right: 60px;
+                                    padding-left: 60px;">Đơn giá:
+                                        <br>
+                                        <span style="font-weight:bold!important">
+                                            {{ Lang::get('message.before_unit_money') . number_format($productCart[0]['price'], 0, ',', '.') . Lang::get('message.after_unit_money') }}
+                                        </span>
+                                    </p>
+                                    <p style="margin: 0; font-weigh:bold!important;">Thành tiền:
+                                        <br>
+                                        <span style="font-weight:bold!important">
+                                            {{ Lang::get('message.before_unit_money') . number_format($productCart[0]['qty'] * $productCart[0]['price'], 0, ',', '.') . Lang::get('message.after_unit_money') }}
+                                        </span>
+                                    </p>
+                                    <?php $total = (int) $total + (int) $productCart[0]['qty'] * (int) $productCart[0]['price']; ?>
+                                </div>
+                                <div class="product-event d-flex col-3">
+                                    <div class="d-flex action">
+                                        <p style="margin: 0"> Số lượng: </p>
+                                        <br>
+                                        <input name= "{{$productCart[0]['rowId']}}" value="{{ $productCart[0]['qty'] }}" min="1" style="height: min-content; width: 100px;" required type="number" id="quantity">
+                                        <a type="button"
+                                            href="{{ URL::to(route('delete_cart', ['id' => $productCart[0]['rowId']])) }}">
+                                            <i id="btnMinus" class="fas fa-trash"></i>
+                                        </a>
                                     </div>
-                                @endif
-                            @endforeach
+                                </div>
+                            @endif
                         @endforeach
-                    </div>
+                    @endforeach
                 </div>
                 <button type="submit" class="btn btn-primary mt-2 d-flex justify-content-center">
                     Xác nhận
@@ -52,7 +58,7 @@
             </form>
             </div>
             @if (isset($product))
-                <div class="box-2">
+                <div class="box-2 col-3">
                     <div class="box-inner-2">
                         <div>
                             <h3 class="fw-bold">Thông tin thanh toán</h3>

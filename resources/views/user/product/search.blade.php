@@ -14,6 +14,9 @@
             <div class="row g-5">
                 <!-- Blog list Start -->
                 <div class="col-lg-8">
+                    @if (session('message'))
+                        <p>{{ session('message') }}</p>
+                    @endif
                     <div class="row g-5">
                         @foreach ($products as $key => $product)
                             <div class="col-md-6 wow slideInUp" data-wow-delay="0.1s">

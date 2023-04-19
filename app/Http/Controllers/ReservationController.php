@@ -117,4 +117,11 @@ class ReservationController extends Controller
     {
         return back();
     }
+
+    public function getFreeTime(Request $request) {
+        $response = $this->model->getFreeTime($request);
+        $res['status'] = true;
+        $res['data'] = $response;
+        return $res;
+    }
 }

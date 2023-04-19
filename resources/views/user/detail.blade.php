@@ -1,8 +1,15 @@
 @extends('user.layout')
 @section('user_content')
+    <div class="container-fluid bg-primary py-5 bg-header" style="margin-bottom: 90px;">
+        <div class="row py-5">
+            <div class="col-12 pt-lg-5 mt-lg-5 text-center">
+                <h1 class="display-4 text-white animated zoomIn">Thông tin cá nhân</h1>
+            </div>
+        </div>
+    </div>
     <!-- Open Content -->
-    <section class="bg-success py-5" id="user_detail">
-        <div class="container rounded bg-white mt-5 mb-5">
+    <section id="user_detail">
+        <div class="container rounded bg-white mt-5 mb-5" style="background-color: lightskyblue!important;">
             <div class="row">
                 <div class="col-md-1 border-right"></div>
                 <div class="col-md-6 border-right">

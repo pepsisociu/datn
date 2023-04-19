@@ -1,7 +1,14 @@
 @extends('user.layout')
 @section('user_content')
+    <div class="container-fluid bg-primary py-5 bg-header" style="margin-bottom: 90px;">
+        <div class="row py-5">
+            <div class="col-12 pt-lg-5 mt-lg-5 text-center">
+                <h1 class="display-4 text-white animated zoomIn">Lịch sử đợn hàng</h1>
+            </div>
+        </div>
+    </div>
     <!-- Open Content -->
-    <section class="bg-success py-5" id="user_detail">
+    <section id="user_detail">
         <div class="container rounded bg-white mt-5 mb-5">
             <div class="row">
                 <h4 class="text-center">Đơn hàng đã mua</h4>
@@ -9,7 +16,7 @@
         </div>
         @if (isset($orders))
             @foreach ($orders as $key => $order)
-                <div class="container rounded bg-white mt-5 mb-5">
+                <div class="container rounded bg-white mt-5 mb-5" style="background-color: lightskyblue!important;">
                     <a href="{{ URL::to(route('detail_order', ['id' => $order->id])) }}" style="text-decoration: none; color: black">
                         <div class="row">
                             <div class="col-md-1 border-right"></div>
@@ -57,87 +64,4 @@
             @endforeach
         @endif
     </section>
-    <section class="bg-success py-5">
-        <div class="container my-4">
-            <div class="row text-center py-3">
-                <div class="col-lg-6 m-auto">
-
-                </div>
-                <div class="col-lg-9 m-auto tempaltemo-carousel">
-                    <div class="row d-flex flex-row">
-                        <!--Controls-->
-                        <div class="col-1 align-self-center">
-
-                        </div>
-                        <!--End Controls-->
-
-                        <!--Carousel Wrapper-->
-                        <div class="col">
-
-                        </div>
-                        <!--End Carousel Wrapper-->
-
-                        <!--Controls-->
-                        <div class="col-1 align-self-center">
-
-                        </div>
-
-                        <!--End Controls-->
-                    </div>
-                </div>
-            </div>
-            <div class="row text-center py-3">
-                <div class="col-lg-6 m-auto">
-
-                </div>
-                <div class="col-lg-9 m-auto tempaltemo-carousel">
-                    <div class="row d-flex flex-row">
-                        <!--Controls-->
-                        <div class="col-1 align-self-center">
-
-                        </div>
-                        <!--End Controls-->
-
-                        <!--Carousel Wrapper-->
-                        <div class="col">
-
-                        </div>
-                        <!--End Carousel Wrapper-->
-
-                        <!--Controls-->
-                        <div class="col-1 align-self-center">
-
-                        </div>
-
-                        <!--End Controls-->
-                    </div>
-                </div>
-            </div>
-            <div class="row text-center py-3">
-                <div class="col-lg-6 m-auto">
-
-                </div>
-                <div class="col-lg-9 m-auto tempaltemo-carousel">
-                    <div class="row d-flex flex-row">
-                        <!--Controls-->
-                        <div class="col-1 align-self-center">
-
-                        </div>
-                        <!--End Controls-->
-
-                        <!--Carousel Wrapper-->
-                        <div class="col">
-
-                        </div>
-                        <!--End Carousel Wrapper-->
-                        <!--Controls-->
-                        <div class="col-1 align-self-center">
-                        </div>
-                        <!--End Controls-->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Close Banner -->
 @endsection
