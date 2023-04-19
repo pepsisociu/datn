@@ -16,30 +16,35 @@
                     <form action="{{ URL::to(route('update_info')) }}" method="POST">
                         @csrf
                         <div class="row mt-2" style="padding-bottom: 20px">
-                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Họ và tên</label>
-                                <input type="text" name="name" class="form-control" style="color: black" required placeholder="Nhập vào họ và tên" value="{{$user->name ?? null}}">
+                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Họ và
+                                    tên</label>
+                                <input type="text" name="name" class="form-control" style="color: black" required
+                                       placeholder="Nhập vào họ và tên" value="{{$user->name ?? null}}">
                                 <input type="hidden" name="phone" class="form-control" value="{{$phone}}">
                             </div>
                         </div>
                         <div class="row mt-2 pb-10" style="padding-bottom: 20px">
-                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn bác sĩ</label>
-                                <select class="form-control" onchange="loadTime()" required style="background-color: white; color: black" name="doctor_id">
-                                    <option  value=""> Chọn bác sĩ </option>
+                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn bác
+                                    sĩ</label>
+                                <select class="form-control" onchange="loadTime()" required
+                                        style="background-color: white; color: black" name="doctor_id">
+                                    <option value=""> Chọn bác sĩ</option>
                                     @foreach ($doctors as $key => $doctor)
-                                        <option value="{{ $doctor->id }}"> {{ $doctor->name }} </option>
+                                        <option value="{{ $doctor->id }}">{{$doctor->levelDoctor->name}} - {{ $doctor->name }} </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="row mt-2 pb-10" style="padding-bottom: 20px">
-                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn ngày</label>
-                                <input type="date" name="date" onchange="loadTime()" class="form-control" style="color: black" required placeholder="Chọn ngày" value="{{$user->name ?? null}}">
+                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn
+                                    ngày</label>
+                                <input type="date" name="date" onchange="loadTime()" class="form-control"
+                                       style="color: black" required placeholder="Chọn ngày"
+                                       value="{{$user->name ?? null}}">
                             </div>
                         </div>
                         <div class="row mt-2 pb-10" id="time" style="padding-bottom: 30px">
-                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn thời gian</label>
-                                <input type="date" name="date" onchange="loadTime()" class="form-control" style="color: black" required placeholder="Chọn ngày" value="{{$user->name ?? null}}">
-                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -49,19 +54,39 @@
     </div>
 
     <script>
-    function loadTime() {
-        var doctor_id = document.getElementsByName("doctor_id")[0].value
-        var date = document.getElementsByName("date")[0].value
-        if (doctor_id && date) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.responseText)
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementsByName("date")[0].setAttribute('min', today);
+        function loadTime() {
+            var doctor_id = document.getElementsByName("doctor_id")[0].value
+            var date = document.getElementsByName("date")[0].value
+            if (doctor_id && date) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var res = JSON.parse(this.responseText)
+                        var time = document.getElementById("time");
+                        var title = document.createElement("div");
+                        var data = document.createElement("div");
+                        var submit = document.createElement("div");
+
+                        title.innerHTML = '<div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn thời gian</label></div>'
+                        time.appendChild(title);
+                        res.data.forEach(function(value, index) {
+                            data.innerHTML += '<div class="form-check form-check-inline col-2" style="margin-right: 0!important;"> <input class="form-check-input" type="radio" name="time" value="' + value +'"> <label class="form-check-label" for="inlineCheckbox1">'+ value +'</label> </div>'
+                        })
+                        time.appendChild(data);
+                        submit.innerHTML = '<div class="col-md-12" style=" text-align: center; padding-top: 20px; "><button class="btn-danger" type="submit">Đặt lịch</button></div>'
+                        time.appendChild(submit);
+                    }
+                };
+                xhttp.open("get", "/getFreeTime?doctor=" + doctor_id + "&date=" + date, true);
+                xhttp.send();
+            } else {
+                var time = document.getElementById("time");
+                while (time.firstChild) {
+                    time.removeChild(time.firstChild);
                 }
-            };
-            xhttp.open("get", "/getFreeTime?doctor=" + doctor_id + "&date=" + date, true);
-            xhttp.send();
+            }
         }
-    }
     </script>
 @endsection
