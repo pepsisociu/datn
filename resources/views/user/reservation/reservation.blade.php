@@ -13,7 +13,7 @@
             <div class="row g-5">
                 <div class="col-3"></div>
                 <div class="col-6" style="background-color: skyblue!important; border-radius: 25px">
-                    <form action="{{ URL::to(route('update_info')) }}" method="POST">
+                    <form action="{{ URL::to(route('reservation')) }}" method="POST">
                         @csrf
                         <div class="row mt-2" style="padding-bottom: 20px">
                             <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Họ và

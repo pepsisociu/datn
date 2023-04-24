@@ -98,7 +98,7 @@ Route::get('/delete-cart/{id}',                             [UserController::cla
 Route::post('/create-order',                                [UserController::class, 'createOrder'])                     ->name('create_order');
 Route::get('/search-order',                                 [UserController::class, 'searchOrder'])                     ->name('search_order');
 Route::get('/reservation',                                  [UserController::class, 'reservation'])                     ->name('reservation');
-Route::post('/search-order',                                [UserController::class, 'createReservation'])               ->name('create_reservation');
+Route::post('/reservation',                                 [UserController::class, 'createReservation'])        ->name('create_reservation');
 Route::get('/getFreeTime',                                  [ReservationController::class, 'getFreeTime'])              ->name('get_freetime');
 
 //User Authenticate
