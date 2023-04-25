@@ -376,6 +376,6 @@ class UserController extends Controller
         if (!$response['status']) {
             $message = $response['message'];
         }
-        return view('user.reservation.reservation', compact('message', 'user'));
+        return back()->with('message', $message);
     }
 }

@@ -21,6 +21,8 @@ class CreateReservationTable extends Migration
             $table->time('time');
             $table->text('message')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->string('name');
+            $table->string('phone');
             $table->timestamps();
         });
     }

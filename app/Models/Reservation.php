@@ -28,8 +28,8 @@ class Reservation extends Model
 //        "18:00", "18:20", "18:40",
 //        "19:00", "19:20", "19:40"];
 
-const TIME_ACCEPT = ["8:00", "8:30",
-        "9:00", "9:30",
+const TIME_ACCEPT = ["08:00", "08:30",
+        "09:00", "09:30",
         "10:00", "10:30",
         "11:00", "11:30",
         "12:00", "12:30",
@@ -51,6 +51,8 @@ const TIME_ACCEPT = ["8:00", "8:30",
     protected $fillable = [
         'doctor_id',
         'user_id',
+        'name',
+        'phone',
         'date',
         'time',
         'message',
@@ -132,7 +134,7 @@ const TIME_ACCEPT = ["8:00", "8:30",
             }
             $reservation->save();
             $status = true;
-            $message = Lang::get('message.update_done');;
+            $message = Lang::get('message.update_done');
         } catch (Exception $e) {
             $status = false;
             $message = $e->getMessage();
@@ -146,6 +148,29 @@ const TIME_ACCEPT = ["8:00", "8:30",
         $time = $reservation->pluck('time')->map(function ($time) {
             return date('H:i', strtotime($time));
         });
-        return array_diff(self::TIME_ACCEPT, $time->toArray());
+        $diff = array_diff(self::TIME_ACCEPT, $time->toArray());
+        return array_values($diff);;
+    }
+
+    public function createReservation($request) {
+        $status = false;
+        $message = null;
+        $data = null;
+        if (Reservation::where([['doctor_id', $request['doctor_id']], ['date', $request['date']], ['time', $request['time']]])->first()) {
+            $message = Lang::get('message.exist_reservation');
+        } else {
+            $reser = new Reservation();
+            $reser->doctor_id = $request['doctor_id'];
+            $reser->user_id = $request['user_id'] ?? null;
+            $reser->name = $request['name'];
+            $reser->phone = $request['phone'];
+            $reser->date = $request['date'];
+            $reser->time = $request['time'];
+            $reser->message = $request['message'] ?? null;
+            $reser->save();
+            $status = true;
+            $message = Lang::get('message.done_reservation');
+        }
+        return $this->responseData($status, $message, $data);
     }
 }

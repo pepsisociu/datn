@@ -1,7 +1,7 @@
 @extends('admin.layout')
 @section('admin_content')
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar sidebar-dark-primary elevation-4" style=" background-color: black; ">
         <!-- Sidebar -->
         <div class="sidebar">
             <!-- Sidebar user panel (optional) -->
@@ -11,17 +11,17 @@
                 </div>
             </div>
             <!-- SidebarSearch Form -->
-            <div class="form-inline">
-                <div class="input-group" data-widget="sidebar-search">
-                    <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm"
-                        aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-sidebar">
-                            <i class="fas fa-search fa-fw"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="form-inline">--}}
+{{--                <div class="input-group" data-widget="sidebar-search">--}}
+{{--                    <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm"--}}
+{{--                        aria-label="Search">--}}
+{{--                    <div class="input-group-append">--}}
+{{--                        <button class="btn btn-sidebar">--}}
+{{--                            <i class="fas fa-search fa-fw"></i>--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -205,29 +205,29 @@
                                 <p>Cấp tài khoản mới</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-sliders-h"></i>
-                                <p>
-                                    Slidebar
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ URL::to(route('admin.sidebar.index')) }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Danh sách slider</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ URL::to(route('admin.sidebar.create')) }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Thêm Slider</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        {{--                        <li class="nav-item">--}}
+{{--                            <a href="#" class="nav-link">--}}
+{{--                                <i class="nav-icon fas fa-sliders-h"></i>--}}
+{{--                                <p>--}}
+{{--                                    Slidebar--}}
+{{--                                    <i class="right fas fa-angle-left"></i>--}}
+{{--                                </p>--}}
+{{--                            </a>--}}
+{{--                            <ul class="nav nav-treeview">--}}
+{{--                                <li class="nav-item">--}}
+{{--                                    <a href="{{ URL::to(route('admin.sidebar.index')) }}" class="nav-link">--}}
+{{--                                        <i class="far fa-circle nav-icon"></i>--}}
+{{--                                        <p>Danh sách slider</p>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                                <li class="nav-item">--}}
+{{--                                    <a href="{{ URL::to(route('admin.sidebar.create')) }}" class="nav-link">--}}
+{{--                                        <i class="far fa-circle nav-icon"></i>--}}
+{{--                                        <p>Thêm Slider</p>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                            </ul>--}}
+{{--                        </li>--}}
                     @endif
                 </ul>
             </nav>
@@ -304,8 +304,8 @@
                                                 <td>{{ $i++ }}</td>
                                                 <td>{{ $reservation->date }}</td>
                                                 <td>{{ $reservation->doctor->name }}</td>
-                                                <td>{{ $reservation->user->name }}</td>
-                                                <td>{{ $reservation->user->phone }}</td>
+                                                <td>{{ $reservation->user->name ?? $reservation->name }}</td>
+                                                <td>{{ $reservation->user->phone ?? $reservation->phone }}</td>
                                                 <td>{{ $reservation->time }}</td>
                                                 <td>{{ $reservation->status == 1 ? 'Xác nhận' : 'Hủy' }}</td>
                                                 <td class="act">
