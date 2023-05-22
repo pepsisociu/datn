@@ -10,19 +10,7 @@
                     <a class="d-block">{{ auth()->user()->name }}</a>
                 </div>
             </div>
-            <!-- SidebarSearch Form -->
-{{--            <div class="form-inline">--}}
-{{--                <div class="input-group" data-widget="sidebar-search">--}}
-{{--                    <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm"--}}
-{{--                        aria-label="Search">--}}
-{{--                    <div class="input-group-append">--}}
-{{--                        <button class="btn btn-sidebar">--}}
-{{--                            <i class="fas fa-search fa-fw"></i>--}}
-{{--                        </button>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            <!-- Sidebar Menu -->
+
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
@@ -120,6 +108,29 @@
                                 <a href="{{ URL::to(route('admin.doctor.create')) }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Thêm bác sĩ</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-server"></i>
+                            <p>
+                                Dịch vụ
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ URL::to(route('admin.service.index')) }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách dịch vụ</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ URL::to(route('admin.service.create')) }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm dịch vụ</p>
                                 </a>
                             </li>
                         </ul>
@@ -327,6 +338,10 @@
                                             </div>
                                             <textarea class="form-control" name="description" rows="2" placeholder="Nhập vào mô tả">{{$doctor->description}}</textarea>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Giới thiệu</label>
+                                        <textarea id="summernote" name="introduce" placeholder="Nhập vào thông tin giới thiệu bác sĩ">{{$doctor->introduce}}</textarea>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->

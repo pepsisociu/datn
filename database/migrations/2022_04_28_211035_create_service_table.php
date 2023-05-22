@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDoctorTable extends Migration
+class CreateServiceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateDoctorTable extends Migration
      */
     public function up()
     {
-        Schema::create('doctor', function (Blueprint $table) {
+        Schema::create('service', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
             $table->string('name');
-            $table->foreignId('level_id')->constrained('level');
-            $table->tinyInteger('active')->default(1);
-            $table->string('description')->nullable();
             $table->text('introduce')->nullable();
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateDoctorTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('service');
     }
 }

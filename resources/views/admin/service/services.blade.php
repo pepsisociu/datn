@@ -55,8 +55,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-th"></i>
                             <p>
                                 Danh mục
@@ -65,7 +65,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.category.index')) }}" class="nav-link active">
+                                <a href="{{ URL::to(route('admin.category.index')) }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Danh sách danh mục</p>
                                 </a>
@@ -124,8 +124,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
+                    <li class="nav-item menu-open">
+                        <a href="#" class="nav-link active">
                             <i class="nav-icon fas fa-server"></i>
                             <p>
                                 Dịch vụ
@@ -134,7 +134,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.service.index')) }}" class="nav-link">
+                                <a href="{{ URL::to(route('admin.service.index')) }}" class="nav-link active">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Danh sách dịch vụ</p>
                                 </a>
@@ -265,13 +265,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Danh sách danh mục</h1>
+                        <h1 class="m-0">Danh sách dịch vụ</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ URL::to(route('screen_admin_home')) }}">Trang
                                     chủ</a></li>
-                            <li class="breadcrumb-item active">Danh mục sản phẩm</li>
+                            <li class="breadcrumb-item active">Dịch vụ</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -295,38 +295,20 @@
                                     <thead>
                                         <tr>
                                             <th>Số thứ tự</th>
-                                            <th>Tên danh mục</th>
-                                            <th>Hình ảnh</th>
-                                            @if (auth()->user()->role->name === Config::get('auth.roles.manager'))
-                                                <th>Người tạo</th>
-                                            @endif
+                                            <th>Tên thương hiệu</th>
                                             <th>Thời gian tạo</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $i = 1; ?>
-                                        @foreach ($categories as $key => $category)
+                                        @foreach ($services as $key => $service)
                                             <tr>
                                                 <td>{{ $i++ }}</td>
-                                                <td>{{ $category->name }}</td>
-                                                <td>
-                                                    @if ($category->image)
-                                                        <img class="img-ctr"
-                                                            src="{{ asset('' . $category->image) }}" />
-                                                    @else
-                                                        <img class="img-ctr"
-                                                            src="{{ asset('' . Config::get('app.image.default')) }}" />
-                                                        <img>
-                                                    @endif
-                                                </td>
-                                                @if (auth()->user()->role->name === Config::get('auth.roles.manager'))
-                                                    <td>{{ $category->user->name }}</td>
-                                                @endif
-                                                <td>{{ $category->created_at }}</td>
+                                                <td>{{ $service->name }}</td>
+                                                <td>{{ $service->created_at }}</td>
                                                 <td class="act">
-                                                    <a
-                                                        href="{{ URL::to(route('admin.category.edit', ['category' => $category->id])) }}">
+                                                    <a href="{{ URL::to(route('admin.service.edit', ['service' => $service->id])) }}">
                                                         <i class="fas fa-edit ico"></i>
                                                     </a>
                                                 </td>

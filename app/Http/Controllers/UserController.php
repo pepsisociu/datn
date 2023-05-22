@@ -9,6 +9,7 @@ use App\Models\Brand;
 use App\Models\Comment;
 use App\Models\InvoiceExport;
 use App\Models\Reservation;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTraits;
@@ -83,7 +84,9 @@ class UserController extends Controller
             return back()->with('message', $message);
         }
 
-        return view('user.product.search', compact('products', 'request', 'categories', 'brands'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.product.search', compact('products', 'request', 'categories', 'brands', 'services', 'doctors'));
     }
 
     /**
@@ -110,8 +113,9 @@ class UserController extends Controller
         if (!$response['status']) {
             return back()->with('message', $message);
         }
-
-        return view('user.product.category', compact('categories', 'brands', 'category'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.product.category', compact('categories', 'brands', 'category', 'services', 'doctors'));
     }
 
     /**
@@ -137,8 +141,9 @@ class UserController extends Controller
         if (!$response['status']) {
             return back()->with('message', $message);
         }
-
-        return view('user.product.brand', compact('categories', 'brands', 'product'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.product.brand', compact('categories', 'brands', 'product', 'services', 'doctors'));
     }
 
     /**
@@ -164,7 +169,9 @@ class UserController extends Controller
         }
         $brands = Brand::all();
         $categories = Category::all();
-        return view('user.product.detail', compact('product', 'comments', 'brands', 'categories'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.product.detail', compact('product', 'comments', 'brands', 'categories', 'services', 'doctors'));
     }
 
     /**
@@ -219,7 +226,9 @@ class UserController extends Controller
         }
         $brands = Brand::all();
         $categories = Category::all();
-        return view('user.cart.detail', compact('products', 'message', 'user', 'brands', 'categories'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.cart.detail', compact('products', 'message', 'user', 'brands', 'categories', 'services', 'doctors'));
     }
 
 
@@ -294,7 +303,9 @@ class UserController extends Controller
         }
         $brands = Brand::all();
         $categories = Category::all();
-        return view('user.order.search', compact('message', 'order', 'brands', 'categories'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.order.search', compact('message', 'order', 'brands', 'categories', 'services', 'doctors'));
     }
 
     /**
@@ -313,7 +324,9 @@ class UserController extends Controller
         }
         $brands = Brand::all();
         $categories = Category::all();
-        return view('user.cart.history', compact('message', 'orders', 'brands', 'categories'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.cart.history', compact('message', 'orders', 'brands', 'categories', 'services', 'doctors'));
     }
 
     /**
@@ -341,7 +354,9 @@ class UserController extends Controller
         }
         $brands = Brand::all();
         $categories = Category::all();
-        return view('user.cart.detail_history', compact('message', 'details', 'brands', 'categories', 'order'));
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
+        return view('user.cart.detail_history', compact('message', 'details', 'brands', 'categories', 'order','services', 'doctors'));
     }
 
     /**
@@ -366,7 +381,8 @@ class UserController extends Controller
         if (!$response['status']) {
             $message = $response['message'];
         }
-        return view('user.reservation.reservation', compact('message', 'user', 'phone', 'doctors'));
+        $services = Service::where('active', true)->get();
+        return view('user.reservation.reservation', compact('message', 'user', 'phone', 'doctors'. 'services'));
     }
 
     public function createReservation(Request $request) {

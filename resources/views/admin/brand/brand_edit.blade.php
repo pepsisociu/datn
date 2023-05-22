@@ -127,6 +127,29 @@
                         </ul>
                     </li>
                     <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-server"></i>
+                            <p>
+                                Dịch vụ
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ URL::to(route('admin.service.index')) }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách dịch vụ</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ URL::to(route('admin.service.create')) }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm dịch vụ</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ URL::to(route('admin.reservation.index')) }}" class="nav-link">
                             <i class="nav-icon fas fa-calendar-alt"></i>
                             <p>Quản lý lịch hẹn</p>

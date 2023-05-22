@@ -149,4 +149,17 @@ trait ValidateTraits
             'price' => 'required',
         ]);
     }
+
+    /**
+     * Validate service
+     *
+     * @param $request
+     * @return void
+     */
+    public function validateService($request)
+    {
+        $request->validate([
+            'name' => 'required',
+        ]);
+    }
 }

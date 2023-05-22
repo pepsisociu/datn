@@ -27,7 +27,8 @@ class Doctor extends Model
         'name',
         'image',
         'level_id',
-        'description'
+        'description',
+        'introduce',
     ];
 
     private $modelProduct;
@@ -109,6 +110,7 @@ class Doctor extends Model
             $doctor->name = $request->name;
             $doctor->level_id = $request->level;
             $doctor->description = $request->description ?? null;
+            $doctor->introduce = $request->introduce ?? null;
             if ($request->image) {
                 $image = $this->modelProduct->checkImage($request->image);
                 if ($image['status']) {

@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\Config;
 use App\Exceptions\RoleAdminException;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Doctor;
 use App\Models\InvoiceExport;
+use App\Models\Service;
 use App\Models\SideBar;
 
 class AuthController extends Controller
@@ -35,7 +37,7 @@ class AuthController extends Controller
     public $user;
     private $modelUser;
     private $modelInvoiceExport;
-    
+
     /**
      * Constructor
      *
@@ -244,7 +246,7 @@ class AuthController extends Controller
                     return redirect(route('screen_login'))->with("message", $message);
                 }
                 $user->createToken('authToken')->plainTextToken;
-    
+
                 return redirect(route('screen_home'));
             }
             return back()->with('message', $message);
@@ -296,6 +298,8 @@ class AuthController extends Controller
         $products = Product::where([['active', '1'], ['is_deleted', '0']])->orderBy('id', 'desc')->get();
         $brands = Brand::all();
         $categories = Category::all();
+        $services = Service::where('active', true)->get();
+        $doctors = Doctor::where('active', true)->get();
         $response = $this->modelInvoiceExport->getProductPaidFromInvoiceExport(date('Y-m-d', strtotime('-3 months')), date('Y-m-d', strtotime('now')));
         $productsMax = $response['data'];
         arsort($productsMax);
@@ -304,6 +308,8 @@ class AuthController extends Controller
                                 ->with('brands', $brands)
                                 ->with('categories', $categories)
                                 ->with('productsMax', $productsMax)
+                                ->with('services', $services)
+                                ->with('doctors', $doctors)
                                 ->with('sidebars', $sidebars);
     }
 
@@ -412,7 +418,8 @@ class AuthController extends Controller
                 $user = User::find(Auth::id());
                 $brands = Brand::all();
                 $categories = Category::all();
-                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories);
+                $services = Service::where('active', true)->get();
+                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories)->with('services', $services);
             } else {
                 return redirect(route('screen_home'));
             }

@@ -13,6 +13,7 @@ use App\Http\Controllers\StatisticalController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('product',                          ProductController::class,                                   ['names' => 'admin.product']);
         Route::resource('doctor',                           DoctorController::class,                                    ['names' => 'admin.doctor']);
         Route::resource('reservation',                      ReservationController::class,                               ['names' => 'admin.reservation']);
+        Route::resource('service',                          ServiceController::class,                                   ['names' => 'admin.service']);
 
         //Admin account
         Route::resource('account',                          AdminController::class,                                     ['names' => 'admin.account']);
@@ -98,8 +100,10 @@ Route::get('/delete-cart/{id}',                             [UserController::cla
 Route::post('/create-order',                                [UserController::class, 'createOrder'])                     ->name('create_order');
 Route::get('/search-order',                                 [UserController::class, 'searchOrder'])                     ->name('search_order');
 Route::get('/reservation',                                  [UserController::class, 'reservation'])                     ->name('reservation');
-Route::post('/reservation',                                 [UserController::class, 'createReservation'])        ->name('create_reservation');
+Route::post('/reservation',                                 [UserController::class, 'createReservation'])               ->name('create_reservation');
 Route::get('/getFreeTime',                                  [ReservationController::class, 'getFreeTime'])              ->name('get_freetime');
+Route::get('/service-info/{id}',                            [ServiceController::class, 'getInfo'])                      ->name('service_info');
+Route::get('/doctor-info/{id}',                             [DoctorController::class, 'getInfo'])                       ->name('doctor_info');
 
 //User Authenticate
 Route::group(['middleware' => 'auth:sanctum'], function () {

@@ -55,17 +55,17 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link active">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-th"></i>
                             <p>
-                                Danh mục
+                                Danh mục sản phẩm
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.category.index')) }}" class="nav-link active">
+                                <a href="{{ URL::to(route('admin.category.index')) }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Danh sách danh mục</p>
                                 </a>
@@ -80,7 +80,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-bars"></i>
+                            <i class="nav-icon fas fa-list-ul"></i>
                             <p>
                                 Sản phẩm
                                 <i class="right fas fa-angle-left"></i>
@@ -124,8 +124,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
+                    <li class="nav-item menu-open">
+                        <a href="#" class="nav-link active">
                             <i class="nav-icon fas fa-server"></i>
                             <p>
                                 Dịch vụ
@@ -140,7 +140,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ URL::to(route('admin.service.create')) }}" class="nav-link">
+                                <a href="{{ URL::to(route('admin.service.create')) }}" class="nav-link active">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Thêm dịch vụ</p>
                                 </a>
@@ -265,13 +265,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Danh sách danh mục</h1>
+                        <h1 class="m-0">Thêm dịch vụ</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ URL::to(route('screen_admin_home')) }}">Trang
                                     chủ</a></li>
-                            <li class="breadcrumb-item active">Danh mục sản phẩm</li>
+                            <li class="breadcrumb-item active">Dịch vụ</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -282,7 +282,9 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12">
+                    <!-- left column -->
+                    <div class="col-md-12">
+                        <!-- jquery validation -->
                         <div class="card">
                             @if (session('message'))
                                 <div class="card-header">
@@ -290,60 +292,52 @@
                                 </div>
                             @endif
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                <table id="example1" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Số thứ tự</th>
-                                            <th>Tên danh mục</th>
-                                            <th>Hình ảnh</th>
-                                            @if (auth()->user()->role->name === Config::get('auth.roles.manager'))
-                                                <th>Người tạo</th>
-                                            @endif
-                                            <th>Thời gian tạo</th>
-                                            <th>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php $i = 1; ?>
-                                        @foreach ($categories as $key => $category)
-                                            <tr>
-                                                <td>{{ $i++ }}</td>
-                                                <td>{{ $category->name }}</td>
-                                                <td>
-                                                    @if ($category->image)
-                                                        <img class="img-ctr"
-                                                            src="{{ asset('' . $category->image) }}" />
-                                                    @else
-                                                        <img class="img-ctr"
-                                                            src="{{ asset('' . Config::get('app.image.default')) }}" />
-                                                        <img>
-                                                    @endif
-                                                </td>
-                                                @if (auth()->user()->role->name === Config::get('auth.roles.manager'))
-                                                    <td>{{ $category->user->name }}</td>
-                                                @endif
-                                                <td>{{ $category->created_at }}</td>
-                                                <td class="act">
-                                                    <a
-                                                        href="{{ URL::to(route('admin.category.edit', ['category' => $category->id])) }}">
-                                                        <i class="fas fa-edit ico"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.card-body -->
+                            <!-- form start -->
+                            <form id="quickForm" action="{{ URL::to(route('admin.service.store')) }}" enctype="multipart/form-data" method="POST">
+                                @csrf
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1" class="required">Tên dịch vụ</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+                                            </div>
+                                            <input type="text" name="name" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Nhập vào tên dịch vụ">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Giới thiệu</label>
+                                        <textarea id="summernote" name="introduce" placeholder="Nhập vào thông tin giới thiệu dịch vụ"></textarea>
+                                    </div>
+                                    <div class="form-group row pt-3 mt-3">
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" name="active" class="custom-control-input"
+                                                    id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1">Hoạt
+                                                    động</label>
+                                            </div>
+                                        </div>
+                                        <div class="text-right col-md-6">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer text-center">
+                                    <button type="submit" class="btn btn-primary">Lưu</button>
+                                </div>
+                            </form>
                         </div>
                         <!-- /.card -->
                     </div>
-                    <!-- /.col -->
+                    <!--/.col (left) -->
+                    <!-- right column -->
+                    <div class="col-md-6"></div>
+                    <!--/.col (right) -->
                 </div>
                 <!-- /.row -->
-            </div>
-            <!-- /.container-fluid -->
+            </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->
     </div>

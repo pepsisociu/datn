@@ -211,6 +211,30 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
                     <a href="{{ URL::to(route('screen_home')) }}" class="nav-item nav-link">Trang chủ</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Dịch vụ</a>
+                        <div class="dropdown-menu m-0" style="width: 450px; min-heigh: 300px;">
+                            <div class="row">
+                                @if ($services)
+                                    @foreach ($services as $key => $service )
+                                        <div class="col-6"> <a href="{{ URL::to(route('service_info', ['id' => $service->id])) }}" class="dropdown-item ">{{$service->name}}</a> </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Bác sĩ</a>
+                        <div class="dropdown-menu m-0" style="width: 450px;">
+                            <div class="row">
+                                @if ($doctors)
+                                    @foreach ($doctors as $key => $doctor )
+                                        <div class="col-6"> <a href="{{ URL::to(route('doctor_info', ['id' => $doctor->id])) }}" class="dropdown-item ">{{$doctor->name}}</a> </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                     <a href="#" class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#searchOrder">Kiểm tra đơn hàng</a>
                     <a href="{{ URL::to(route('cart')) }}" class="nav-item nav-link">Giỏ hàng</a>
                     @if (Auth::check() && Auth::user()->role->name === Config::get('auth.roles.user'))
