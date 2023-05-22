@@ -158,6 +158,7 @@ class ServiceController extends Controller
         $categories = Category::all();
         $services = Service::where('active', true)->get();
         $doctors = Doctor::where('active', true)->get();
-        return view('user.service.info', compact('message', 'serv', 'brands', 'categories', 'services', 'doctors'));
+        $categories = Category::all();
+        return view('user.service.info', compact('message', 'serv', 'brands', 'categories', 'services', 'doctors', 'categories'));
     }
 }

@@ -172,6 +172,8 @@ class DoctorController extends Controller
         $categories = Category::all();
         $services = Service::where('active', true)->get();
         $doctors = Doctor::where('active', true)->get();
-        return view('user.doctor.info', compact('message', 'details', 'brands', 'categories', 'services', 'doctors', 'doc'));
+
+        $categories = Category::all();
+        return view('user.doctor.info', compact('message', 'details', 'brands', 'categories', 'services', 'doctors', 'doc', 'categories'));
     }
 }

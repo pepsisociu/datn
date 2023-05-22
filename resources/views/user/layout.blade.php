@@ -235,6 +235,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Danh mục sản phẩm</a>
+                        <div class="dropdown-menu m-0" style="width: 450px;">
+                            <div class="row">
+                                @if ($categories)
+                                    @foreach ($categories as $key => $category )
+                                        <div class="col-6"> <a href="{{ URL::to(route('search_products', ['category' => $category->id])) }}" class="dropdown-item ">{{$category->name}}</a> </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                     <a href="#" class="nav-item nav-link" data-bs-toggle="modal" data-bs-target="#searchOrder">Kiểm tra đơn hàng</a>
                     <a href="{{ URL::to(route('cart')) }}" class="nav-item nav-link">Giỏ hàng</a>
                     @if (Auth::check() && Auth::user()->role->name === Config::get('auth.roles.user'))

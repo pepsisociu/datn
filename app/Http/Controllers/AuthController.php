@@ -300,6 +300,7 @@ class AuthController extends Controller
         $categories = Category::all();
         $services = Service::where('active', true)->get();
         $doctors = Doctor::where('active', true)->get();
+        $categories = Category::all();
         $response = $this->modelInvoiceExport->getProductPaidFromInvoiceExport(date('Y-m-d', strtotime('-3 months')), date('Y-m-d', strtotime('now')));
         $productsMax = $response['data'];
         arsort($productsMax);
@@ -310,6 +311,7 @@ class AuthController extends Controller
                                 ->with('productsMax', $productsMax)
                                 ->with('services', $services)
                                 ->with('doctors', $doctors)
+                                ->with('categories', $categories)
                                 ->with('sidebars', $sidebars);
     }
 
@@ -419,7 +421,8 @@ class AuthController extends Controller
                 $brands = Brand::all();
                 $categories = Category::all();
                 $services = Service::where('active', true)->get();
-                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories)->with('services', $services);
+                $categories = Category::all();
+                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories)->with('services', $services)->with('categories', $categories);
             } else {
                 return redirect(route('screen_home'));
             }
