@@ -25,6 +25,7 @@ class Doctor extends Model
      */
     protected $fillable = [
         'name',
+        'email',
         'image',
         'level_id',
         'description',
@@ -108,6 +109,7 @@ class Doctor extends Model
             $message = null;
             $doctor = new Doctor();
             $doctor->name = $request->name;
+            $doctor->email = $request->email;
             $doctor->level_id = $request->level;
             $doctor->description = $request->description ?? null;
             $doctor->introduce = $request->introduce ?? null;
@@ -147,6 +149,7 @@ class Doctor extends Model
             $doctor = Doctor::find($id);
             if ($doctor && $doctor->where('active', 1)) {
                 $doctor->name = $request->name;
+                $doctor->email = $request->email;
                 $doctor->level_id = $request->level;
                 if (isset($request->description)) {
                     $doctor->description = $request->description;

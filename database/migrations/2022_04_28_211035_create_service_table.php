@@ -17,6 +17,9 @@ class CreateServiceTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('introduce')->nullable();
+            $table->time('work_time');
+            $table->time('number_recheck')->nullable();
+            $table->time('unit_recheck')->nullable();
             $table->boolean('active')->default(false);
             $table->timestamps();
         });

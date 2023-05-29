@@ -17,6 +17,7 @@ class CreateReservationTable extends Migration
             $table->id();
             $table->foreignId('doctor_id')->constrained('doctor');
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('service_id')->constrained('service');
             $table->date('date');
             $table->time('time');
             $table->text('message')->nullable();

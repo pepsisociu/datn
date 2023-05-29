@@ -24,9 +24,20 @@
                                 <label class="labels" style="font-size: 20px; color: black">Họ và
                                     tên</label>
                                 <input type="text" name="name" class="form-control" style="color: black" required
-                                       placeholder="Nhập vào họ và tên" value="{{$user->name ?? null}}">
+                                    placeholder="Nhập vào họ và tên" value="{{$user->name ?? null}}">
                                 <input type="hidden" name="phone" class="form-control" value="{{$phone}}">
                                 <input type="hidden" name="user_id" class="form-control" value="{{$user->id ?? null}}">
+                            </div>
+                        </div>
+                        <div class="row mt-2 pb-10" style="padding-bottom: 20px">
+                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn dịch vụ</label>
+                                <select class="form-control" onchange="loadTime()" required
+                                        style="background-color: white; color: black" name="service_id">
+                                    <option value=""> Chọn dịch vụ</option>
+                                    @foreach ($services as $key => $service)
+                                        <option value="{{ $service->id }}">{{ $service->name }} </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="row mt-2 pb-10" style="padding-bottom: 20px">
@@ -67,11 +78,12 @@
         function loadTime() {
             var doctor_id = document.getElementsByName("doctor_id")[0].value
             var date = document.getElementsByName("date")[0].value
+            var service = document.getElementsByName("service_id")[0].value
             var time = document.getElementById("time");
             while (time.firstChild) {
                 time.removeChild(time.firstChild);
             }
-            if (doctor_id && date) {
+            if (doctor_id && date && service) {
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
@@ -96,7 +108,7 @@
                         time.appendChild(submit);
                     }
                 };
-                xhttp.open("get", "/getFreeTime?doctor=" + doctor_id + "&date=" + date, true);
+                xhttp.open("get", "/getFreeTime?doctor=" + doctor_id + "&date=" + date  + "&service=" + service, true);
                 xhttp.send();
             }
         }

@@ -301,13 +301,47 @@
                                 <input name="_method" type="hidden" value="PUT">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1" class="required">Tên thương hiệu</label>
+                                        <label for="exampleInputEmail1" class="required">Tên dịch vụ</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-address-card"></i></span>
                                             </div>
                                             <input type="text" name="name" class="form-control" id="exampleInputEmail1"
                                                 value="{{ $service->name }}" placeholder="Nhập vào tên thương hiệu">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="required">Thời gian thực hiện</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                            </div>
+                                            <select class="form-control select2bs4" name="work_time">
+                                                <option selected="selected" disabled>Chọn thời gian thực hiện</option>
+                                                @foreach ($workTimes as $key => $workTime)
+                                                    <option @if ((string)date("H:i", strtotime($service->work_time)) == $key) selected @endif value="{{ $key }}">{{ $workTime }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Thời gian tái khám</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <select class="form-control select2bs4 col-5" name="number_recheck">
+                                                <option selected="selected" disabled>Chọn thời gian tái khám</option>
+                                                @for ($i = 1; $i <= 30; $i++)
+                                                    <option  @if ($service->number_recheck == $i) selected @endif  value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                            <select class="form-control select2bs4 col-5" name="unit_recheck">
+                                                <option selected="selected" disabled>Chọn đơn vị</option>
+                                                <option @if ($service->unit_recheck == 'day') selected @endif value="day">Ngày</option>
+                                                <option @if ($service->unit_recheck == 'month') selected @endif value="month">Tháng</option>
+                                                <option @if ($service->unit_recheck == 'year') selected @endif value="year">Năm</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">

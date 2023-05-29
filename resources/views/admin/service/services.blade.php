@@ -295,7 +295,7 @@
                                     <thead>
                                         <tr>
                                             <th>Số thứ tự</th>
-                                            <th>Tên thương hiệu</th>
+                                            <th>Tên dịch vụ</th>
                                             <th>Thời gian tạo</th>
                                             <th>Thao tác</th>
                                         </tr>

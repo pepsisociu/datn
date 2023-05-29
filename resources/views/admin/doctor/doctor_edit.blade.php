@@ -298,6 +298,16 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label for="exampleInputEmail1" class="required">Email</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="text" name="email" class="form-control" id="exampleInputEmail1"
+                                                value="{{ $doctor->email }}" placeholder="Nhập vào email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label class="required">Cấp bậc</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">

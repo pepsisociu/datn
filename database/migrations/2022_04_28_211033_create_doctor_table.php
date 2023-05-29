@@ -20,6 +20,7 @@ class CreateDoctorTable extends Migration
             $table->foreignId('level_id')->constrained('level');
             $table->tinyInteger('active')->default(1);
             $table->string('description')->nullable();
+            $table->string('email', 255);
             $table->text('introduce')->nullable();
             $table->timestamps();
         });
