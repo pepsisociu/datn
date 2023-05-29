@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
+use PHPUnit\TextUI\XmlConfiguration\Constant;
 
 class Service extends Model
 {
@@ -26,6 +27,24 @@ class Service extends Model
         'name',
         'introduce',
         'active',
+        'work_time',
+        'number_recheck',
+        'unit_recheck',
+    ];
+
+    public const WORKTIME = [
+        '00:30' => '30 phút',
+        '01:00' => '1 giờ',
+        '01:30' => '1 giờ 30 phút',
+        '02:00' => '2 giờ',
+        '02:30' => '2 giờ 30 phút',
+        '03:00' => '3 giờ',
+        '03:30' => '3 giờ 30 phút',
+        '04:00' => '4 giờ',
+        '04:30' => '4 giờ 30 phút',
+        '05:00' => '5 giờ',
+        '05:30' => '5 giờ 30 phút',
+        '06:00' => '6 giờ',
     ];
 
     /**
@@ -112,6 +131,9 @@ class Service extends Model
             $service = new Service();
             $service->name = $request->name;
             $service->introduce = $request->introduce ?? null;
+            $service->number_recheck = $request->number_recheck ?? null;
+            $service->unit_recheck = $request->unit_recheck ?? null;
+            $service->work_time = $request->work_time;
             if ($request->active) {
                 $service->active = true;
             }
@@ -147,6 +169,9 @@ class Service extends Model
                 $service->name = $request->name;
                 $service->description = $request->description ?? null;
                 $service->introduce = $request->introduce ?? null;
+                $service->number_recheck = $request->number_recheck ?? null;
+                $service->unit_recheck = $request->unit_recheck ?? null;
+                $service->work_time = $request->work_time;
                 $service->active = isset($request->active) ? true : false;
                 $service->save();
                 $status = true;

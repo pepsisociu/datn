@@ -284,6 +284,7 @@
                                         <tr>
                                             <th>Số thứ tự</th>
                                             <th>Tên bác sĩ</th>
+                                            <th>Email</th>
                                             <th>Hình ảnh</th>
                                             <th>Cấp bậc</th>
                                             <th>Thao tác</th>
@@ -295,14 +296,12 @@
                                             <tr>
                                                 <td>{{ $i++ }}</td>
                                                 <td>{{ $doctor->name }}</td>
+                                                <td>{{ $doctor->email }}</td>
                                                 <td>
                                                     @if ($doctor->image)
-                                                        <img class="img-ctr"
-                                                            src="{{ asset('' . $doctor->image) }}" />
+                                                        <img class="img-ctr" src="{{ asset('' . $doctor->image) }}" />
                                                     @else
-                                                        <img class="img-ctr"
-                                                            src="{{ asset('' . Config::get('app.image.default')) }}" />
-                                                        <img>
+                                                        <img class="img-ctr" src="{{ asset('' . Config::get('app.image.default')) }}"/><img>
                                                     @endif
                                                 </td>
                                                 <td>{{ $doctor->levelDoctor->name }}</td>

@@ -60,7 +60,8 @@ class ServiceController extends Controller
     public function create()
     {
         $this->checkRoleAdmin();
-        return view('admin.service.service_add');
+        $workTimes = Service::WORKTIME;
+        return view('admin.service.service_add', compact('workTimes'));
     }
 
     /**
@@ -109,7 +110,8 @@ class ServiceController extends Controller
             return redirect(route('admin.service.index'))->with('message', $message);
         }
         $service = $response['data'];
-        return view('admin.service.service_edit', compact('service'));
+        $workTimes = Service::WORKTIME;
+        return view('admin.service.service_edit', compact('service', 'workTimes'));
     }
 
     /**

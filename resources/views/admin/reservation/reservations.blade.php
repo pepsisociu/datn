@@ -314,9 +314,11 @@
                                             <th>Ngày</th>
                                             <th>Tên bác sĩ</th>
                                             <th>Tên người đặt</th>
+                                            <th>Dịch vụ</th>
                                             <th>Số điện thoại</th>
                                             <th>Thời gian</th>
                                             <th>Trạng thái</th>
+                                            <th>Thời gian tái khám</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
@@ -328,9 +330,11 @@
                                                 <td>{{ $reservation->date }}</td>
                                                 <td>{{ $reservation->doctor->name }}</td>
                                                 <td>{{ $reservation->user->name ?? $reservation->name }}</td>
+                                                <td>{{ $reservation->service->name ?? null}}</td>
                                                 <td>{{ $reservation->user->phone ?? $reservation->phone }}</td>
                                                 <td>{{ $reservation->time }}</td>
                                                 <td>{{ $reservation->status == 1 ? 'Xác nhận' : 'Hủy' }}</td>
+                                                <td>{{ $reservation->date_recheck }}</td>
                                                 <td class="act">
                                                     <div class="row pd-12">
                                                         <a

@@ -307,6 +307,40 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label class="required">Thời gian thực hiện</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                            </div>
+                                            <select class="form-control select2bs4" name="work_time">
+                                                <option selected="selected" disabled>Chọn thời gian thực hiện</option>
+                                                @foreach ($workTimes as $key => $workTime)
+                                                    <option value="{{ $key }}">{{ $workTime }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Thời gian tái khám</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <select class="form-control select2bs4 col-5" name="number_recheck">
+                                                <option selected="selected" disabled>Chọn thời gian tái khám</option>
+                                                @for ($i = 1; $i <= 30; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                            <select class="form-control select2bs4 col-5" name="unit_recheck">
+                                                <option selected="selected" disabled>Chọn đơn vị</option>
+                                                <option value="day">Ngày</option>
+                                                <option value="month">Tháng</option>
+                                                <option value="year">Năm</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label>Giới thiệu</label>
                                         <textarea id="summernote" name="introduce" placeholder="Nhập vào thông tin giới thiệu dịch vụ"></textarea>
                                     </div>

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Config;
 use Exception;
 use Illuminate\Support\Facades\Lang;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class Reservation extends Model
 {
@@ -51,6 +53,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
     protected $fillable = [
         'doctor_id',
         'user_id',
+        'service_id',
         'name',
         'phone',
         'date',
@@ -92,12 +95,39 @@ const TIME_ACCEPT = ["08:00", "08:30",
         return $this->hasOne(Doctor::class, 'id', 'doctor_id');
     }
 
+    /**
+     * Relation with service
+     *
+     * @return BelongsTo
+     */
+    public function service()
+    {
+        return $this->hasOne(Service::class, 'id', 'service_id');
+    }
+
     public function getReservations($request)
     {
         try {
             $startDate = date('Y-m-d', strtotime(substr($request->date, 0, 10)));
             $endDate = date('Y-m-d', strtotime(substr($request->date, 13, 23)));
             $data = Reservation::whereDate('date', '<=', $startDate)->whereDate('date', '>=', $endDate)->orderBy('id', 'DESC')->get();
+            foreach($data as $key => $value) {
+                $currentDate = Carbon::parse($value->date);
+                switch ($value->service->unit_recheck) {
+                    case 'day':
+                        $data[$key]->date_recheck = $currentDate->addDays($value->service->number_recheck)->format("Y-m-d");
+                        break;
+                    case 'month':
+                        $data[$key]->date_recheck = $currentDate->addMonths($value->service->number_recheck)->format("Y-m-d");;
+                        break;
+                    case 'year':
+                        $data[$key]->date_recheck = $currentDate->addYears($value->service->number_recheck)->format("Y-m-d");;
+                        break;
+                    default:
+                        $data[$key]->date_recheck = $value->date;
+                        break;
+                }
+            }
             $status = true;
             $message = null;
         } catch (Exception $e) {
@@ -145,7 +175,35 @@ const TIME_ACCEPT = ["08:00", "08:30",
     public function getFreeTime($request)
     {
         $reservation = Reservation::where('date', $request->date)->where('doctor_id', $request->doctor)->where('status', 1)->get();
-        $time = $reservation->pluck('time')->map(function ($time) {
+        $timeReservation = [];
+        $serviceReq = Service::where('id', $request->service)->first();
+        foreach ($reservation as $key => $resv) {
+            $timeDefault = Carbon::createFromFormat("H:i:m", "00:30:00");
+            $timeService = Carbon::createFromFormat("H:i:m", $resv->service->work_time);
+            $timeMain = $resv->time;
+            $dateTimeMain = Carbon::createFromFormat("H:i:m", $timeMain);
+            $dateTimeMainToUp = Carbon::createFromFormat("H:i:m", $timeMain);
+            $dateTimeMainToDown = Carbon::createFromFormat("H:i:m", $timeMain);
+            $timeReservation[] = $dateTimeMain->format('H:i');
+            if ($timeService->greaterThan($timeDefault)) {
+                while ($timeService->greaterThan($timeDefault)) {
+                    $timeEnd = $dateTimeMainToDown->addMinutes(30)->format("H:i");
+                    $timeReservation[] = $timeEnd;
+                    $timeService->subMinutes(30);
+                }
+            }
+
+            $timeServiceReq = Carbon::createFromFormat("H:i:m", $serviceReq->work_time);
+            if ($timeServiceReq->greaterThan($timeDefault)) {
+                while ($timeServiceReq->greaterThan($timeDefault)) {
+                    $timeUp = $dateTimeMainToUp->subMinutes(30)->format("H:i");
+                    $timeReservation[] = $timeUp;
+                    $timeServiceReq->subMinutes(30);
+                }
+            }
+        }
+        $timeReservation = new Collection($timeReservation);
+        $time = $timeReservation->map(function ($time) {
             return date('H:i', strtotime($time));
         });
         $diff = array_diff(self::TIME_ACCEPT, $time->toArray());
@@ -166,6 +224,8 @@ const TIME_ACCEPT = ["08:00", "08:30",
             $reser->phone = $request['phone'];
             $reser->date = $request['date'];
             $reser->time = $request['time'];
+
+            $reser->service_id = $request['service_id'];
             $reser->message = $request['message'] ?? null;
             $reser->save();
             $status = true;
