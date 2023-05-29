@@ -33,6 +33,7 @@ class Service extends Model
     ];
 
     public const WORKTIME = [
+        '00:30' => '30 phút',
         '01:00' => '1 giờ',
         '01:30' => '1 giờ 30 phút',
         '02:00' => '2 giờ',
