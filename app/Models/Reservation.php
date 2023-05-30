@@ -111,7 +111,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
         try {
             $startDate = date('Y-m-d', strtotime(substr($request->date, 0, 10)));
             $endDate = date('Y-m-d', strtotime(substr($request->date, 13, 23)));
-            $data = Reservation::whereDate('date', '<=', $startDate)->whereDate('date', '>=', $endDate)->orderBy('id', 'DESC')->get();
+            $data = Reservation::whereDate('date', '>=', $startDate)->whereDate('date', '<=', $endDate)->orderBy('id', 'DESC')->get();
             foreach($data as $key => $value) {
                 $currentDate = Carbon::parse($value->date);
                 switch ($value->service->unit_recheck) {
