@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\Lang;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Mail;
 
 class Reservation extends Model
 {
@@ -174,9 +175,9 @@ const TIME_ACCEPT = ["08:00", "08:30",
 
     public function getFreeTime($request)
     {
-        $reservation = Reservation::where('date', $request->date)->where('doctor_id', $request->doctor)->where('status', 1)->get();
+        $reservation = Reservation::where('date', $request->date)->where('doctor_id', $request->doctor_id)->where('status', 1)->get();
         $timeReservation = [];
-        $serviceReq = Service::where('id', $request->service)->first();
+        $serviceReq = Service::where('id', $request->service_id)->first();
         foreach ($reservation as $key => $resv) {
             $timeDefault = Carbon::createFromFormat("H:i:m", "00:30:00");
             $timeService = Carbon::createFromFormat("H:i:m", $resv->service->work_time);
@@ -214,7 +215,8 @@ const TIME_ACCEPT = ["08:00", "08:30",
         $status = false;
         $message = null;
         $data = null;
-        if (Reservation::where([['doctor_id', $request['doctor_id']], ['date', $request['date']], ['time', $request['time']]])->first()) {
+        $freetime = $this->getFreeTime($request);
+        if (Reservation::where([['doctor_id', $request['doctor_id']], ['date', $request['date']], ['time', $request['time']]])->first() || !in_array($request['time'], $freetime)) {
             $message = Lang::get('message.exist_reservation');
         } else {
             $reser = new Reservation();
@@ -224,12 +226,15 @@ const TIME_ACCEPT = ["08:00", "08:30",
             $reser->phone = $request['phone'];
             $reser->date = $request['date'];
             $reser->time = $request['time'];
-
             $reser->service_id = $request['service_id'];
             $reser->message = $request['message'] ?? null;
             $reser->save();
             $status = true;
+            $data = array("name" => $reser->doctor->name, "time" => $reser->time  ,"date" => $reser->date, "email" => $reser->doctor->email, "service" => $reser->service->name);
             $message = Lang::get('message.done_reservation');
+            Mail::send('mail.mail_reservation', $data, function ($messages) use ($data) {
+                $messages->to($data['email'])->subject(Lang::get('message.notification_reservation'));
+            });
         }
         return $this->responseData($status, $message, $data);
     }

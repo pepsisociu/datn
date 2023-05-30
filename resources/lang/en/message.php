@@ -43,5 +43,6 @@ return [
     'no_long_in_business' => 'Sản phẩm tạm ngừng kinh doanh',
     'quantity_more_than_1' => 'Số lượng phải lớn hơn 1',
     'exist_reservation' => 'Lịch này đã được đặt, hãy đặt lịch khác',
-    'done_reservation' => 'Đặt lịch thành công'
+    'done_reservation' => 'Đặt lịch thành công',
+    'notification_reservation' => 'Thông báo lịch khám'
 ];

@@ -88,27 +88,35 @@
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         var res = JSON.parse(this.responseText)
+                        console.log(res.data)
                         var time = document.getElementById("time");
-                        var title = document.createElement("div");
-                        var data = document.createElement("div");
-                        var mess = document.createElement("div");
-                        var submit = document.createElement("div");
-                        title.innerHTML = '<div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn thời gian</label></div>'
-                        time.appendChild(title);
+                        if (res.data.length != 0) {
+                            var title = document.createElement("div");
+                            var data = document.createElement("div");
+                            var mess = document.createElement("div");
+                            var submit = document.createElement("div");
+                            title.innerHTML = '<div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn thời gian</label></div>'
+                            time.appendChild(title);
 
-                        res.data.forEach(function (value, index) {
-                            data.innerHTML += '<div class="form-check form-check-inline col-2" style="margin-right: 0!important; color:black"> <input class="form-check-input" type="radio" name="time" value="' + value + '"> <label class="form-check-label" for="inlineCheckbox1">' + value + '</label> </div>'
-                        })
-                        time.appendChild(data);
+                            res.data.forEach(function (value, index) {
+                                data.innerHTML += '<div class="form-check form-check-inline col-2" style="margin-right: 0!important; color:black"> <input class="form-check-input" type="radio" name="time" value="' + value + '"> <label class="form-check-label" for="inlineCheckbox1">' + value + '</label> </div>'
+                            })
+                            time.appendChild(data);
 
-                        mess.innerHTML = '<div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Lời nhắn</label> <textarea class="form-control" name="message" rows = "2" > </textarea>'
-                        time.appendChild(mess);
+                            mess.innerHTML = '<div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Lời nhắn</label> <textarea class="form-control" name="message" rows = "2" > </textarea>'
+                            time.appendChild(mess);
 
-                        submit.innerHTML = '<div class="col-md-12" style=" text-align: center; padding-top: 20px; border-radius: 10px"><button class="btn-danger" type="submit">Đặt lịch</button></div>'
-                        time.appendChild(submit);
+                            submit.innerHTML = '<div class="col-md-12" style=" text-align: center; padding-top: 20px; border-radius: 10px"><button class="btn-danger" type="submit">Đặt lịch</button></div>'
+                            time.appendChild(submit);
+                        } else {
+                            var response = document.createElement("div");
+                            response.innerHTML = '<div class="col-md-12" style=" text-align: center; padding-top: 20px; border-radius: 10px"><label class="labels" style="font-size: 20px; color: black">Đã hết thời gian rảnh hãy thử lại với thời gian khác</label></div>'
+                            time.appendChild(response);
+                        }
+
                     }
                 };
-                xhttp.open("get", "/getFreeTime?doctor=" + doctor_id + "&date=" + date  + "&service=" + service, true);
+                xhttp.open("get", "/getFreeTime?doctor_id=" + doctor_id + "&date=" + date  + "&service_id=" + service, true);
                 xhttp.send();
             }
         }
