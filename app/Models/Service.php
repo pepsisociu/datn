@@ -167,7 +167,6 @@ class Service extends Model
                     return $this->responseData($status, $message);
                 }
                 $service->name = $request->name;
-                $service->description = $request->description ?? null;
                 $service->introduce = $request->introduce ?? null;
                 $service->number_recheck = $request->number_recheck ?? null;
                 $service->unit_recheck = $request->unit_recheck ?? null;
