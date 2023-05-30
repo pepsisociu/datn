@@ -422,7 +422,8 @@ class AuthController extends Controller
                 $categories = Category::all();
                 $services = Service::where('active', true)->get();
                 $categories = Category::all();
-                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories)->with('services', $services)->with('categories', $categories);
+                $doctors = Doctor::where('active', true)->get();
+                return view('user.detail')->with('user', $user)->with('brands', $brands)->with('categories', $categories)->with('services', $services)->with('categories', $categories)->with('doctors', $doctors);
             } else {
                 return redirect(route('screen_home'));
             }
