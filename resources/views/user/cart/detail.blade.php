@@ -12,24 +12,24 @@
             <div class="box-1 py-3 col-9">
                 <form action="{{ URL::to(route('update_cart')) }}" method="POST" >
                     @csrf
-                <div class="dis list-product info d-flex">
                     <?php $total = 0; ?>
                     @foreach (Cart::content()->groupBy('id')->toArray() as $productCart)
                         @foreach ($products as $keyProduct => $product)
                             @if ($productCart[0]['id'] == $product->id)
+                            <div class="dis list-product info d-flex" style="padding: 20px 0;">
                                 <div class="product-image col-2">
                                     <img src="{{ asset('' . $product->image) }}" style="height: 100px; width:150px"/>
                                 </div>
                                 <div class="product-name d-flex col-7">
-                                    <h5 class="col-3">{{ $product->name }}</h5>
-                                    <p style="margin: 0; padding-right: 60px;
-                                    padding-left: 60px;">Đơn giá:
+                                    <h5 class="col-4">{{ $product->name }}</h5>
+                                    <p class="col-4" style="margin: 0; padding-right: 30px;
+                                    padding-left: 30px;">Đơn giá:
                                         <br>
                                         <span style="font-weight:bold!important">
                                             {{ Lang::get('message.before_unit_money') . number_format($productCart[0]['price'], 0, ',', '.') . Lang::get('message.after_unit_money') }}
                                         </span>
                                     </p>
-                                    <p style="margin: 0; font-weigh:bold!important;">Thành tiền:
+                                    <p class="col-4" style="margin: 0; font-weigh:bold!important;">Thành tiền:
                                         <br>
                                         <span style="font-weight:bold!important">
                                             {{ Lang::get('message.before_unit_money') . number_format($productCart[0]['qty'] * $productCart[0]['price'], 0, ',', '.') . Lang::get('message.after_unit_money') }}
@@ -48,10 +48,10 @@
                                         </a>
                                     </div>
                                 </div>
+                            </div>
                             @endif
                         @endforeach
                     @endforeach
-                </div>
                 <button type="submit" class="btn btn-primary mt-2 d-flex justify-content-center">
                     Xác nhận
                 </button>
