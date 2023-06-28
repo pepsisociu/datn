@@ -44,7 +44,7 @@ Route::prefix('admin')->group(function () {
 
         //Admin invoice import
         Route::get('invoice-import/pay/{invoice_import}',   [InvoiceImportController::class, 'pay'])                    ->name('admin.invoice_import.pay');
-        Route::resource('invoice-import',        InvoiceImportController::class,                             ['names' => 'admin.invoice_import']);
+        Route::resource('invoice-import',                   InvoiceImportController::class,                             ['names' => 'admin.invoice_import']);
 
         //Admin invoice export
         Route::get('order',                                 [InvoiceExportController::class, 'orders'])                 ->name('admin.invoice_export.order');
@@ -76,42 +76,53 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+Route::prefix('doctor')->group(function () {
+    Route::get('/login',                                   [DoctorController::class, 'initScreenLoginDoctor'])         ->name('screen_doctor_login');
+    Route::post('/login',                                  [DoctorController::class, 'loginDoctor'])                   ->name('doctor_login');
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::get('',                                     [DoctorController::class, 'indexDoctor'])                   ->name('screen_home_doctor');
+        Route::get('logout',                               [DoctorController::class, 'logoutDoctor'])                  ->name('doctor_logout');
+        Route::get('account',                              [DoctorController::class, 'account'])                       ->name('doctor_account');
+        Route::post('account',                             [DoctorController::class, 'updatePassword'])                ->name('doctor_account_update');
+    });
+});
+
 //User
-Route::get('/register',                                     [AuthController::class, 'initScreenRegister'])              ->name('screen_register');
-Route::post('/register',                                    [AuthController::class, 'register'])                        ->name('register');
-Route::get('/login',                                        [AuthController::class, 'initScreenLogin'])                 ->name('screen_login');
-Route::post('/login',                                       [AuthController::class, 'login'])                           ->name('login');
-Route::get('/',                                             [AuthController::class, 'index'])                           ->name('screen_home');
+Route::get('/register',                                     [AuthController::class, 'initScreenRegister'])             ->name('screen_register');
+Route::post('/register',                                    [AuthController::class, 'register'])                       ->name('register');
+Route::get('/login',                                        [AuthController::class, 'initScreenLogin'])                ->name('screen_login');
+Route::post('/login',                                       [AuthController::class, 'login'])                          ->name('login');
+Route::get('/',                                             [AuthController::class, 'index'])                          ->name('screen_home');
 
-Route::get('/forgot-password',                              [AuthController::class, 'initScreenForgotPassword'])        ->name('screen_forgot_password');
-Route::post('/forgot-password',                             [AuthController::class, 'forgotPassword'])                  ->name('forgot_password');
-Route::get('/reset-password',                               [AuthController::class, 'initScreenUpdatePassword'])        ->name('screen_reset_password');
-Route::post('/update-password',                             [AuthController::class, 'updatePassword'])                  ->name('update_password');
+Route::get('/forgot-password',                              [AuthController::class, 'initScreenForgotPassword'])       ->name('screen_forgot_password');
+Route::post('/forgot-password',                             [AuthController::class, 'forgotPassword'])                 ->name('forgot_password');
+Route::get('/reset-password',                               [AuthController::class, 'initScreenUpdatePassword'])       ->name('screen_reset_password');
+Route::post('/update-password',                             [AuthController::class, 'updatePassword'])                 ->name('update_password');
 
-Route::get('/search',                                       [UserController::class, 'searchProducts'])                  ->name('search_products');
-Route::get('/search-category',                              [UserController::class, 'searchCategories'])                ->name('search_categories');
-Route::get('/search-brand',                                 [UserController::class, 'searchBrands'])                    ->name('search_brands');
-Route::get('/product/{id}',                                 [UserController::class, 'detailProduct'])                   ->name('detail_product');
-Route::post('/product/{id}',                                [UserController::class, 'addCart'])                         ->name('add_cart');
-Route::post('/buy-product/{id}',                            [UserController::class, 'buyProduct'])                      ->name('buy_product');
-Route::get('/cart',                                         [UserController::class, 'detailCart'])                      ->name('cart');
-Route::post('/update-cart',                                 [UserController::class, 'updateCart'])                      ->name('update_cart');
-Route::get('/delete-cart/{id}',                             [UserController::class, 'deleteCart'])                      ->name('delete_cart');
-Route::post('/create-order',                                [UserController::class, 'createOrder'])                     ->name('create_order');
-Route::get('/search-order',                                 [UserController::class, 'searchOrder'])                     ->name('search_order');
-Route::get('/reservation',                                  [UserController::class, 'reservation'])                     ->name('reservation');
-Route::post('/reservation',                                 [UserController::class, 'createReservation'])               ->name('create_reservation');
-Route::get('/getFreeTime',                                  [ReservationController::class, 'getFreeTime'])              ->name('get_freetime');
-Route::get('/service-info/{id}',                            [ServiceController::class, 'getInfo'])                      ->name('service_info');
-Route::get('/doctor-info/{id}',                             [DoctorController::class, 'getInfo'])                       ->name('doctor_info');
+Route::get('/search',                                       [UserController::class, 'searchProducts'])                 ->name('search_products');
+Route::get('/search-category',                              [UserController::class, 'searchCategories'])               ->name('search_categories');
+Route::get('/search-brand',                                 [UserController::class, 'searchBrands'])                   ->name('search_brands');
+Route::get('/product/{id}',                                 [UserController::class, 'detailProduct'])                  ->name('detail_product');
+Route::post('/product/{id}',                                [UserController::class, 'addCart'])                        ->name('add_cart');
+Route::post('/buy-product/{id}',                            [UserController::class, 'buyProduct'])                     ->name('buy_product');
+Route::get('/cart',                                         [UserController::class, 'detailCart'])                     ->name('cart');
+Route::post('/update-cart',                                 [UserController::class, 'updateCart'])                     ->name('update_cart');
+Route::get('/delete-cart/{id}',                             [UserController::class, 'deleteCart'])                     ->name('delete_cart');
+Route::post('/create-order',                                [UserController::class, 'createOrder'])                    ->name('create_order');
+Route::get('/search-order',                                 [UserController::class, 'searchOrder'])                    ->name('search_order');
+Route::get('/reservation',                                  [UserController::class, 'reservation'])                    ->name('reservation');
+Route::post('/reservation',                                 [UserController::class, 'createReservation'])              ->name('create_reservation');
+Route::get('/getFreeTime',                                  [ReservationController::class, 'getFreeTime'])             ->name('get_freetime');
+Route::get('/service-info/{id}',                            [ServiceController::class, 'getInfo'])                     ->name('service_info');
+Route::get('/doctor-info/{id}',                             [DoctorController::class, 'getInfo'])                      ->name('doctor_info');
 
 //User Authenticate
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('/comment/{id}',                            [UserController::class, 'addComment'])                       ->name('comment');
-    Route::get('/info',                                     [AuthController::class, 'initScreenInfo'])                   ->name('screen_info');
-    Route::post('/update-info',                             [AuthController::class, 'updateInfo'])                       ->name('update_info');
-    Route::post('/change-password',                         [AuthController::class, 'changePassword'])                   ->name('change_password');
-    Route::get('/logout',                                   [AuthController::class, 'logout'])                           ->name('logout');
-    Route::get('/history-order',                            [UserController::class, 'historyOrder'])                     ->name('history_order');
-    Route::get('/detail-order/{id}',                        [UserController::class, 'detailOrder'])                      ->name('detail_order');
+    Route::post('/comment/{id}',                            [UserController::class, 'addComment'])                     ->name('comment');
+    Route::get('/info',                                     [AuthController::class, 'initScreenInfo'])                 ->name('screen_info');
+    Route::post('/update-info',                             [AuthController::class, 'updateInfo'])                     ->name('update_info');
+    Route::post('/change-password',                         [AuthController::class, 'changePassword'])                 ->name('change_password');
+    Route::get('/logout',                                   [AuthController::class, 'logout'])                         ->name('logout');
+    Route::get('/history-order',                            [UserController::class, 'historyOrder'])                   ->name('history_order');
+    Route::get('/detail-order/{id}',                        [UserController::class, 'detailOrder'])                    ->name('detail_order');
 });

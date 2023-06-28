@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
 use PhpParser\Comment\Doc;
 
@@ -30,9 +31,11 @@ class Doctor extends Model
         'level_id',
         'description',
         'introduce',
+        'user_id',
     ];
 
     private $modelProduct;
+    private $modelUser;
     private $url;
 
     /**
@@ -43,6 +46,7 @@ class Doctor extends Model
     public function __construct()
     {
         $this->modelProduct = new Product();
+        $this->modelUser = new User();
         $this->url = Config::get('app.image.url');
     }
 
@@ -116,12 +120,21 @@ class Doctor extends Model
             if ($request->image) {
                 $image = $this->modelProduct->checkImage($request->image);
                 if ($image['status']) {
-                    $newImage = date('Ymdhis') . '.' . $request->image->getClientOriginalExtension();
-                    $doctor->image = $this->url . $newImage;
-                    $request->image->move($this->url, $newImage);
-                    $doctor->save();
-                    $status = true;
-                    $message = Lang::get('message.add_done');
+                    $role = Role::where('name', Config::get('auth.roles.doctor'))->first();
+                    $response = $this->modelUser->addAccount($request, $role->id);
+                    $status = $response['status'];
+                    $message = $response['message'];
+                    if ($status == true) {
+                        $newImage = date('Ymdhis') . '.' . $request->image->getClientOriginalExtension();
+                        $doctor->image = $this->url . $newImage;
+                        $request->image->move($this->url, $newImage);
+                        $doctor->save();
+                        $status = true;
+                        $message = Lang::get('message.add_done');
+                    }
+                    else {
+                        return $this->responseData($status, $message);
+                    }
                 } else {
                     throw new Exception($image['message']);
                 }
@@ -186,5 +199,28 @@ class Doctor extends Model
         $message = Lang::get('message.update_done');
         $status = true;
         return $this->responseData($status, $message, $data);
+    }
+
+    public function updatePassword($request) {
+        try {
+            $status = true;
+            $message = Lang::get('message.can_not_find_or_wrong');
+            $user = User::find(Auth::id());
+            if (isset($user) && $user->is_deleted !== 1) {
+                $credentials = ['username' => $user->username,
+                    'password' => $request->old_password];
+                if (Auth::guard('web')->attempt($credentials) && $request->password == $request->confirm_password) {
+                    $user->password = Hash::make($request->password);
+                    $user->save();
+                    $status = true;
+                    $message = Lang::get('message.update_done');
+                }
+            }
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+        }
+        return $this->responseData($status, $message);
+
     }
 }

@@ -307,6 +307,26 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label for="exampleInputEmail1" class="required">Tài khoản</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+                                            </div>
+                                            <input type="text" name="username" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Nhập vào tài khoản">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1" class="required">Số điện thoại</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+                                            </div>
+                                            <input type="number" name="phone" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Nhập vào số điện thoại">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="exampleInputEmail1" class="required">Email</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">

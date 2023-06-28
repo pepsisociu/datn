@@ -57,29 +57,29 @@
                     </div>
                     <div class="col-md-5 border-right">
                         <h5 class="text-right">
-                            {{ Lang::get('message.before_unit_money') . number_format($order->need_pay   , 0, ',', '.') . Lang::get('message.after_unit_money') }}
+                            {{ Lang::get('message.before_unit_money') . number_format($order->need_pay, 0, ',', '.') . Lang::get('message.after_unit_money') }}
                         </h5>
                     </div>
                 </div>
             </div>
             @if (isset($details))
-            <table width="100%" style="border: 1px solid;">
-                <tr>
-                    <th width="33%" class="text-center">Sản phẩm</th>
-                    <th width="33%" class="text-center">Số lượng</th>
-                    <th width="33%" class="text-center">Thành tiền</th>
-                  </tr>
-            @foreach ($details as $key => $detail)
-                <tr>
-                    <td width="33%" class="text-center">{{$detail->product->name}}</td>
-                    <td width="33%" class="text-center">{{$detail->quantity}}</td>
-                    <td width="33%" class="text-center">
-                        {{ Lang::get('message.before_unit_money') . number_format($detail->into_money, 0, ',', '.') . Lang::get('message.after_unit_money') }}
-                    </td>
-                </tr>
-            @endforeach
-        </table>
-        @endif
+                <table width="100%" style="border: 1px solid;">
+                    <tr>
+                        <th width="33%" class="text-center">Sản phẩm</th>
+                        <th width="33%" class="text-center">Số lượng</th>
+                        <th width="33%" class="text-center">Thành tiền</th>
+                    </tr>
+                    @foreach ($details as $key => $detail)
+                        <tr>
+                            <td width="33%" class="text-center">{{$detail->product->name}}</td>
+                            <td width="33%" class="text-center">{{$detail->quantity}}</td>
+                            <td width="33%" class="text-center">
+                                {{ Lang::get('message.before_unit_money') . number_format($detail->into_money, 0, ',', '.') . Lang::get('message.after_unit_money') }}
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            @endif
         </div>
     </section>
 @endsection

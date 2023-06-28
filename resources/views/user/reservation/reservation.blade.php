@@ -30,6 +30,12 @@
                             </div>
                         </div>
                         <div class="row mt-2 pb-10" style="padding-bottom: 20px">
+                            <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Email</label>
+                                <input type="email" name="email" class="form-control" style="color: black" required
+                                    placeholder="Nhập vào email" value="{{$user->email ?? null}}">
+                            </div>
+                        </div>
+                        <div class="row mt-2 pb-10" style="padding-bottom: 20px">
                             <div class="col-md-12"><label class="labels" style="font-size: 20px; color: black">Chọn dịch vụ</label>
                                 <select class="form-control" onchange="loadTime()" required
                                         style="background-color: white; color: black" name="service_id">

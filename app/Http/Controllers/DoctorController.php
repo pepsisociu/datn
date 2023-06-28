@@ -7,7 +7,9 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Doctor;
 use App\Models\Level;
+use App\Models\Reservation;
 use App\Models\Service;
+use App\Models\User;
 use App\Traits\ResponseTraits;
 use App\Traits\ValidateTraits;
 use Exception;
@@ -17,6 +19,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Config;
 
 class DoctorController extends Controller
 {
@@ -24,6 +29,8 @@ class DoctorController extends Controller
 
     private $model;
     private $modelLevel;
+    private $modelReservation;
+    public $doctor;
 
 
     /**
@@ -35,6 +42,8 @@ class DoctorController extends Controller
     {
         $this->model = new Doctor();
         $this->modelLevel = new Level();
+        $this->modelReservation = new Reservation();
+        $this->doctor = Config::get('auth.roles.doctor');
     }
 
     /**
@@ -175,5 +184,69 @@ class DoctorController extends Controller
 
         $categories = Category::all();
         return view('user.doctor.info', compact('message', 'details', 'brands', 'categories', 'services', 'doctors', 'doc', 'categories'));
+    }
+
+    public function initScreenLoginDoctor() {
+        return view('doctor.login');
+    }
+
+    public function loginDoctor(Request $request) {
+        try {
+            $this->validateLogin($request);
+            $credentials = request(['username', 'password']);
+            $user = User::where('username', $request->username)->first();
+            if (!Auth::attempt($credentials) || $user->role->name !== $this->doctor) {
+                $message = Lang::get('message.wrong_email_password');
+                return redirect(route('screen_doctor_login'))->with("message", $message);
+            }
+            $user->createToken('authToken')->plainTextToken;
+            return redirect(route('screen_home_doctor'));
+        } catch (Exception $e) {
+            return back()->with('message', $e->getMessage());
+        }
+    }
+
+    public function indexDoctor(Request $request){
+        $this->checkRoleDoctor();
+        $response['data'] = [];
+        $response['message'] = null;
+        $response['status'] = true;
+        if (isset($request->date)) {
+            $doctor = Doctor::where('user_id', Auth::user()->id)->first();
+            $response = $this->modelReservation->getReservations($request, $doctor->id);
+        }
+        $reservations = $response['data'];
+        $message = $response['message'];
+        if (!$response['status']) {
+            return back()->with('message', $message);
+        }
+        return view('doctor.home', compact('reservations'));
+    }
+
+    public function logoutDoctor()
+    {
+        $this->checkRoleDoctor();
+        Auth::guard('web')->logout();
+        return redirect(route('screen_doctor_login'));
+    }
+
+    public function account() {
+        $this->checkRoleDoctor();
+        return view('doctor.account');
+    }
+
+    public function updatePassword(Request $request) {
+        try {
+            if ($this->checkRoleDoctor()) {
+                $response = $this->model->updatePassword($request);
+                $message = $response['message'];
+            } else {
+                $message = Lang::get('message.not_have_role');
+                return redirect(route('screen_admin_login'))->with('message', $message);
+            }
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+        }
+        return back()->with('message', $message);
     }
 }
