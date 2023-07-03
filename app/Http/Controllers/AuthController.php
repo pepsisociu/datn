@@ -35,7 +35,6 @@ class AuthController extends Controller
     public $manager;
     public $admin;
     public $user;
-    public $doctor;
     private $modelUser;
     private $modelInvoiceExport;
 
@@ -49,7 +48,6 @@ class AuthController extends Controller
         $this->manager = Config::get('auth.roles.manager');
         $this->admin = Config::get('auth.roles.admin');
         $this->user = Config::get('auth.roles.user');
-        $this->doctor = Config::get('auth.roles.doctor');
         $this->modelUser = new User();
         $this->modelInvoiceExport = new InvoiceExport();
     }

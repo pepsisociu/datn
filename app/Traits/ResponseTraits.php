@@ -57,15 +57,6 @@ trait ResponseTraits
         Throw new RoleAdminException();
     }
 
-    public function checkRoleDoctor()
-    {
-        $auth = new AuthController();
-        if (Auth::user()->role->name === $auth->doctor) {
-            return true;
-        }
-        Throw new RoleAdminException();
-    }
-
     /**
      * Check role user
      *

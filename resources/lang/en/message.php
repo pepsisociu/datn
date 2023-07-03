@@ -10,7 +10,6 @@ return [
     'link_expired' => 'Đường dẫn hết hạn. Thử lại.',
     'reset_pass' => 'Thay đổi mật khẩu.',
     'can_not_find' => 'Không thể tìm thấy!!!',
-    'can_not_find_or_wrong' => 'Không thể tìm thấy hoặc thông tin sai',
     'exist' => 'Đã tồn tại!!!',
     'exist_email' => 'Mail đã được sử dụng!!!',
     'exist_username' => 'Tài khoản đã được sử dụng!!!',
@@ -45,6 +44,5 @@ return [
     'quantity_more_than_1' => 'Số lượng phải lớn hơn 1',
     'exist_reservation' => 'Lịch này đã được đặt, hãy đặt lịch khác',
     'done_reservation' => 'Đặt lịch thành công',
-    'notification_reservation' => 'Thông báo lịch khám',
-    'cancel_reservation' => 'Hủy thông tin đặt lịch'
+    'notification_reservation' => 'Thông báo lịch khám'
 ];

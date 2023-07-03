@@ -123,7 +123,7 @@ class User extends Authenticatable
      * @param $request
      * @return array
      */
-    public function addAccount($request, $roleId = null)
+    public function addAccount($request)
     {
         try {
             if (User::where('email', $request->email)->first()) {
@@ -144,7 +144,7 @@ class User extends Authenticatable
             $account->username = $request->username;
             $account->phone = $request->phone;
             $account->password = Hash::make('123456');
-            $account->role_id = $roleId ?: $role->id;
+            $account->role_id = $role->id;
             $account->save();
             $status = true;
             $message = Lang::get('message.add_done');
@@ -300,7 +300,7 @@ class User extends Authenticatable
         try {
             $users = User::where([
                 ['phone', $request->phone],
-                ['role_id', 2],
+                ['role_id', 3],
                 ['is_deleted', false]])
                 ->first();
             $status = true;

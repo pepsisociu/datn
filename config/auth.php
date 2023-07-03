@@ -112,6 +112,5 @@ return [
         'manager'=> 'manager',
         'admin' => 'admin',
         'user' => 'user',
-        'doctor' => 'doctor',
     ],
 ];

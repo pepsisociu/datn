@@ -45,9 +45,6 @@ class Handler extends ExceptionHandler
         if ($exception instanceof RoleAdminException) {
             return redirect(route('screen_admin_login'))->with('message', $exception->getMessage());
         }
-        if ($exception instanceof RoleDoctorException) {
-            return redirect(route('screen_doctor_login'))->with('message', $exception->getMessage());
-        }
         return redirect(route('screen_login'))->with('message', $exception->getMessage());
     }
 }

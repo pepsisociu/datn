@@ -57,7 +57,6 @@ const TIME_ACCEPT = ["08:00", "08:30",
         'service_id',
         'name',
         'phone',
-        'email',
         'date',
         'time',
         'message',
@@ -107,15 +106,12 @@ const TIME_ACCEPT = ["08:00", "08:30",
         return $this->hasOne(Service::class, 'id', 'service_id');
     }
 
-    public function getReservations($request, $doctorId = null)
+    public function getReservations($request)
     {
         try {
             $startDate = date('Y-m-d', strtotime(substr($request->date, 0, 10)));
             $endDate = date('Y-m-d', strtotime(substr($request->date, 13, 23)));
             $data = Reservation::whereDate('date', '>=', $startDate)->whereDate('date', '<=', $endDate)->orderBy('id', 'DESC')->get();
-            if ($doctorId) {
-                $data = Reservation::whereDate('date', '>=', $startDate)->whereDate('date', '<=', $endDate)->where('doctor_id', $doctorId)->orderBy('id', 'DESC')->get();
-            }
             foreach($data as $key => $value) {
                 $currentDate = Carbon::parse($value->date);
                 switch ($value->service->unit_recheck) {
@@ -162,18 +158,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
         try {
             $data = null;
             $reservation = Reservation::find($id);
-            $status = $request->status == 'on' ? 1 : 0;
-            if ($reservation->status != $status && $status == 0) {
-                $dataMail = array(  "name" => $reservation->name,
-                                    "email" => $reservation->email,
-                                    "serviceName" => $reservation->service->name,
-                                    "date" => $reservation->date,
-                                    "time" => $reservation->time);
-                Mail::send('mail.mail_cancel_reservation', $dataMail, function ($messages) use ($dataMail) {
-                    $messages->to($dataMail['email'])->subject(Lang::get('message.cancel_reservation'));
-                });
-            }
-            $reservation->status = $status;
+            $reservation->status = $request->status == 'on' ? 1 : 0;
             if (isset($request->doctor_id) && $request->doctor_id != null) ;
             {
                 $reservation->doctor_id = $request->doctor_id;
@@ -239,7 +224,6 @@ const TIME_ACCEPT = ["08:00", "08:30",
             $reser->user_id = $request['user_id'] ?? null;
             $reser->name = $request['name'];
             $reser->phone = $request['phone'];
-            $reser->email = $request['email'];
             $reser->date = $request['date'];
             $reser->time = $request['time'];
             $reser->service_id = $request['service_id'];
