@@ -139,8 +139,8 @@ class ProductController extends Controller
             }
             $product = $response['data'];
 
-            $responseBramd = $this->modelBrand->getBrands();
-            $brands = $responseBramd['data'];
+            $responseBrand = $this->modelBrand->getBrands();
+            $brands = $responseBrand['data'];
             $responseCate = $this->modelCategory->getCategories();
             $categories = $responseCate['data'];
             $responseCate = $this->model->getDetailProduct($id);
