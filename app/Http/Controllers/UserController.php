@@ -65,6 +65,8 @@ class UserController extends Controller
     {
         $response = $this->modelProduct->searchProducts($request);
         $products = $response['data'];
+        $response = $this->modelProduct->searchProductsRelate();
+        $productsRelate = $response['data'];
         $message = $response['message'];
         if (!$response['status']) {
             return back()->with('message', $message);
@@ -88,7 +90,7 @@ class UserController extends Controller
         $doctors = Doctor::where('active', true)->get();
 
         $categories = Category::all();
-        return view('user.product.search', compact('products', 'request', 'categories', 'brands', 'services', 'doctors', 'categories'));
+        return view('user.product.search', compact('products', 'request', 'categories', 'brands', 'services', 'doctors', 'categories', 'productsRelate'));
     }
 
     /**

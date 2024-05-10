@@ -73,6 +73,33 @@
                         </div>
                         <button type="submit" class="btn btn-primary px-4">Tìm kiếm</button>
                     </form>
+                        <h4>Các sản phẩm có thể bạn quan tâm</h4>
+                       @foreach ($productsRelate as $key => $product)
+                       <div class="col-md-6 wow slideInUp" data-wow-delay="0.1s" style="width: 100%; padding-top: 30px">
+                            <a href="{{ URL::to(route('detail_product', ['id' => $product->id])) }}" class="blog-item bg-light rounded overflow-hidden row" style="background: transparent!important;">
+                                <div class="blog-img position-relative overflow-hidden d-flex col-5"> <!-- Thêm class d-flex và justify-content-center, align-items-center -->
+                                    <img class="img-fluid" src="{{ asset('' . $product->image) }}" alt="" style="max-width: 100%;"> <!-- Thêm style max-width để hình ảnh không quá to -->
+                                </div>
+                                <div class="col-7">
+                                    <h4 class="mb-3">{{$product->name}}</h4>
+                                    <h4 class="mb-3">
+                                        <?php $now = Carbon\Carbon::now()->toDateTimeString() ?>
+                                        @if ($now <= $product->end_promotion && $now >= $product->start_promotion)
+                                        {{ Lang::get('message.before_unit_money') . number_format($product->price_down, 0, ',', '.') . Lang::get('message.after_unit_money') }}
+                                        @else
+                                        {{ Lang::get('message.before_unit_money') . number_format($product->price, 0, ',', '.') . Lang::get('message.after_unit_money') }}
+                                        @endif
+                                    </h4>
+                                </div>
+                            </a>
+                       </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+
+                    @endforeach
                 </div>
                 <!-- Sidebar End -->
             </div>

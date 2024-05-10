@@ -44,6 +44,8 @@ class Product extends Model
     ];
 
     private $url;
+    private $modelInvoiceExport;
+    private $modelDetailInvoiceExport;
 
     /**
      * Constructor
@@ -51,6 +53,8 @@ class Product extends Model
     public function __construct()
     {
         $this->url = Config::get('app.image.url');
+        $this->modelInvoiceExport = new InvoiceExport();
+        $this->modelDetailInvoiceExport = new DetailInvoiceExport();
     }
 
     /**
@@ -410,13 +414,41 @@ class Product extends Model
     public function searchProducts($request)
     {
         try {
-            $status = false;
-            $message = Lang::get('message.can_not_find');
             $data = '';
             $products = Product::query()->category($request)->brand($request)->title($request)->where([['active', 1], ['is_deleted', 0], ['quantity', '>', 0]])->orderBy('id', 'DESC')->get();
             $status = true;
             $message = '';
             $data = $products;
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+        }
+        return $this->responseData($status, $message, $data);
+    }
+
+
+    /**
+     * Search product relate
+     *
+     * @return array
+     */
+    public function searchProductsRelate(): array
+    {
+        try {
+            $productsRelate = null;
+            if (Auth::user()) {
+                $invoice = $this->modelInvoiceExport->getInvoiceExportByUserId(Auth::id());
+                if ($invoice["data"] != null) {
+                    $cate_id = $invoice["data"]->detailInvoiceExport->product->category->id;
+                    $productsRelate = Product::query()->category($cate_id)->where([['active', 1], ['is_deleted', 0], ['quantity', '>', 0]])->orderBy('id', 'DESC')->limit(3)->get();
+                }
+            }
+            if ($productsRelate == null) {
+                $productsRelate = Product::query()->where([['active', 1], ['is_deleted', 0], ['quantity', '>', 0]])->orderBy('id', 'DESC')->limit(3)->get();
+            }
+            $status = true;
+            $message = '';
+            $data = $productsRelate;
         } catch (Exception $e) {
             $status = false;
             $message = $e->getMessage();
@@ -508,7 +540,6 @@ class Product extends Model
             $message = '';
 
         } catch (Exception $e) {
-            $status = false;
             $message = $e->getMessage();
         }
         return $this->responseData($status, $message, $data);
@@ -524,7 +555,7 @@ class Product extends Model
     {
         try {
             $status = false;
-            $message = Lang::get('message.can_not_find');
+            $message = Lang::get('message.update_done');
             foreach ($request->toArray() as $key => $product){
                 if ($key != '_token') {
                     if ($product < 1){
@@ -534,19 +565,16 @@ class Product extends Model
                     else {
                         $productDetail = Product::find(Cart::get($key)->id);
                         if ($productDetail->quantity < $product){
-                            $message = Lang::get('message.quantity_not_enough');
+                            $message = Lang::get('message.some_quantity_not_enough');
                         } else {
-
-                        Cart::update($key, $product);
+                            Cart::update($key, $product);
                         }
                     }
                 }
             }
             $status = true;
-            $message = Lang::get('message.update_done');
 
         } catch (Exception $e) {
-            $status = false;
             $message = $e->getMessage();
         }
         return $this->responseData($status, $message);
@@ -561,8 +589,6 @@ class Product extends Model
     public function deleteProductInCart($id)
     {
         try {
-            $status = false;
-            $message = Lang::get('message.can_not_find');
             Cart::remove($id);
             $status = true;
             $message = Lang::get('message.delete_done');

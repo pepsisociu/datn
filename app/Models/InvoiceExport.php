@@ -558,7 +558,7 @@ class InvoiceExport extends Model
     /**
      * Get invoice export paid
      *
-     * @param $request
+     * @param $id
      * @return array
      */
     public function getCodeInvoiceExport($id)
@@ -579,5 +579,29 @@ class InvoiceExport extends Model
         }
         return $this->responseData($status, $message, $data);
     }
-    
+
+    /**
+     * Get invoice by user id
+     *
+     * @param $userId
+     * @return array
+     */
+        public function getInvoiceExportByUserId($userId)
+    {
+        try {
+            $status = false;
+            $data = null;
+            $message = Lang::get('message.can_not_find');
+            $order = InvoiceExport::where("user_id", $userId)->Order("desc")->first();
+            if (isset($order)) {
+                $status = true;
+                $data = $order;
+                $message = '';
+            }
+        } catch (Exception $e) {
+            $status = false;
+            $message = $e->getMessage();
+        }
+        return $this->responseData($status, $message, $data);
+    }
 }

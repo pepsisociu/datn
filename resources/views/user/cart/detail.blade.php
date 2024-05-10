@@ -8,6 +8,14 @@
         </div>
     </div>
     <section class="bg-light" id="card_container">
+        @if (session('message'))
+            <p style=" vertical-align: middle;
+                text-align: center;
+                font-size: 30px;
+                color: red;">
+                {{ session('message') }}
+            </p>
+        @endif
         <div class="container d-lg-flex">
             <div class="box-1 py-3 col-9">
                 <form action="{{ URL::to(route('update_cart')) }}" method="POST" >
@@ -18,7 +26,7 @@
                             @if ($productCart[0]['id'] == $product->id)
                             <div class="dis list-product info d-flex" style="padding: 20px 0;">
                                 <div class="product-image col-2">
-                                    <img src="{{ asset('' . $product->image) }}" style="height: 100px; width:150px"/>
+                                    <img src="{{ asset('' . $product->image) }}" style="height: 100%; width:80%"/>
                                 </div>
                                 <div class="product-name d-flex col-7">
                                     <h5 class="col-4">{{ $product->name }}</h5>
@@ -39,10 +47,11 @@
                                 </div>
                                 <div class="product-event d-flex col-3">
                                     <div class="d-flex action">
-                                        <p style="margin: 0"> Số lượng: </p>
+                                        <p style="margin-right: 10px"> Số lượng: </p>
                                         <br>
-                                        <input name= "{{$productCart[0]['rowId']}}" value="{{ $productCart[0]['qty'] }}" min="1" style="height: min-content; width: 100px;" required type="number" id="quantity">
+                                        <input name= "{{$productCart[0]['rowId']}}" value="{{ $productCart[0]['qty'] }}" min="1" style="height: min-content; width: 70px;" required type="number" id="quantity">
                                         <a type="button"
+                                            style="margin-left: 10px"
                                             href="{{ URL::to(route('delete_cart', ['id' => $productCart[0]['rowId']])) }}">
                                             <i id="btnMinus" class="fas fa-trash"></i>
                                         </a>

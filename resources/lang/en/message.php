@@ -14,6 +14,7 @@ return [
     'exist_email' => 'Mail đã được sử dụng!!!',
     'exist_username' => 'Tài khoản đã được sử dụng!!!',
     'quantity_not_enough' => 'Không đủ số lượng',
+    'some_quantity_not_enough' => 'Một số sản phẩm không đủ số lượng',
     'add_done' => 'Thêm thành công.',
     'update_done' => 'Cập nhật thành công.',
     'delete_done' => 'Xóa thành công.',
