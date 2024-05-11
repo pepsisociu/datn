@@ -33,6 +33,7 @@ class Doctor extends Model
     ];
 
     private $modelProduct;
+    private $modelReservation;
     private $url;
 
     /**
@@ -43,6 +44,7 @@ class Doctor extends Model
     public function __construct()
     {
         $this->modelProduct = new Product();
+        $this->modelReservation = new Reservation();
         $this->url = Config::get('app.image.url');
     }
 
@@ -54,6 +56,16 @@ class Doctor extends Model
     public function levelDoctor()
     {
         return $this->hasOne(Level::class, 'id', 'level_id');
+    }
+
+    /**
+     * Relation with user
+     *
+     * @return BelongsTo
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function getDoctors()
@@ -187,4 +199,13 @@ class Doctor extends Model
         $status = true;
         return $this->responseData($status, $message, $data);
     }
+
+    public function getReservation($request) {
+        $doctorId = Doctor::where('user_id', Auth::id())->first()->id;
+        $data = $this->modelReservation->getReservationByDoctor($doctorId, $request);
+        $message = Lang::get('message.update_done');
+        $status = true;
+        return $this->responseData($status, $message, $data);
+    }
+
 }

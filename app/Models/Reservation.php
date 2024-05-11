@@ -238,4 +238,10 @@ const TIME_ACCEPT = ["08:00", "08:30",
         }
         return $this->responseData($status, $message, $data);
     }
+
+    public function getReservationByDoctor($doctorId, $request) {
+        $startDate = date('Y-m-d', strtotime(substr($request->date, 0, 10)));
+        $endDate = date('Y-m-d', strtotime(substr($request->date, 13, 23)));
+        return Reservation::where([['doctor_id', $doctorId], ['status', 1]])->whereDate('date', '>=', $startDate)->whereDate('date', '<=', $endDate)->orderBy('date', 'DESC')->get();
+    }
 }

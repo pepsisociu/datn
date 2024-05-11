@@ -176,4 +176,23 @@ class DoctorController extends Controller
         $categories = Category::all();
         return view('user.doctor.info', compact('message', 'details', 'brands', 'categories', 'services', 'doctors', 'doc', 'categories'));
     }
+
+    /**
+     * Get reservation customer for doctor.
+     *
+     * @return Application|Factory|View
+     */
+    public function getReservation(Request $request)
+    {
+        $this->checkRoleDoctor();
+        $response['data'] = [];
+        $response['message'] = null;
+        $response['status'] = true;
+        if (isset($request->date)) {
+            $response = $this->model->getReservation($request);
+        }
+        $reservations = $response['data'];
+        $message = $response['message'];
+        return view('admin.doctor.doctor_reservation', compact('message', 'reservations'));
+    }
 }

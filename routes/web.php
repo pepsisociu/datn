@@ -73,6 +73,9 @@ Route::prefix('admin')->group(function () {
         //Admin account
         Route::resource('account',                          AdminController::class,                                     ['names' => 'admin.account']);
         Route::resource('sidebar',                          SideBarController::class,                                   ['names' => 'admin.sidebar']);
+
+        //Doctor control
+        Route::get('doctor-reservation',                    [DoctorController::class, 'getReservation'])                ->name('admin.doctor.reservation');
     });
 });
 

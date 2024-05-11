@@ -50,7 +50,8 @@ trait ResponseTraits
     public function checkRoleAdmin()
     {
         $auth = new AuthController();
-        if (Auth::user()->role->name === $auth->admin ||
+        if (Auth::user()->role->name === $auth->doctor ||
+            Auth::user()->role->name === $auth->admin ||
             Auth::user()->role->name === $auth->manager) {
             return true;
         }
@@ -65,6 +66,19 @@ trait ResponseTraits
     public function checkRoleUser()
     {
         if (Auth::user()->role->name === $this->user) {
+            return true;
+        } return false;
+    }
+
+    /**
+     * Check role doctor
+     *
+     * @return bool
+     */
+    public function checkRoleDoctor()
+    {
+        $auth = new AuthController();
+        if (Auth::user()->role->name ===  $auth->doctor) {
             return true;
         } return false;
     }
