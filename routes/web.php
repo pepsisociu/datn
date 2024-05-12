@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ReservationLeaveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,13 +70,14 @@ Route::prefix('admin')->group(function () {
         Route::resource('doctor',                           DoctorController::class,                                    ['names' => 'admin.doctor']);
         Route::resource('reservation',                      ReservationController::class,                               ['names' => 'admin.reservation']);
         Route::resource('service',                          ServiceController::class,                                   ['names' => 'admin.service']);
+        Route::resource('doctor-reservation',               ReservationLeaveController::class,                          ['names' => 'admin.reservation_leave']);
 
         //Admin account
         Route::resource('account',                          AdminController::class,                                     ['names' => 'admin.account']);
         Route::resource('sidebar',                          SideBarController::class,                                   ['names' => 'admin.sidebar']);
 
         //Doctor control
-        Route::get('doctor-reservation',                    [DoctorController::class, 'getReservation'])                ->name('admin.doctor.reservation');
+        Route::get('doctor-reservation-customer',           [DoctorController::class, 'getReservation'])                ->name('admin.doctor.reservation');
     });
 });
 

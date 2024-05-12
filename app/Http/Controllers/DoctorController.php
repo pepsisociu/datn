@@ -193,6 +193,6 @@ class DoctorController extends Controller
         }
         $reservations = $response['data'];
         $message = $response['message'];
-        return view('admin.doctor.doctor_reservation', compact('message', 'reservations'));
+        return view('admin.reservation_leave.doctor_reservation', compact('message', 'reservations'));
     }
 }

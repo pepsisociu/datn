@@ -34,6 +34,7 @@ class Doctor extends Model
 
     private $modelProduct;
     private $modelReservation;
+    private $modelUser;
     private $url;
 
     /**
@@ -45,6 +46,7 @@ class Doctor extends Model
     {
         $this->modelProduct = new Product();
         $this->modelReservation = new Reservation();
+        $this->modelUser = new User();
         $this->url = Config::get('app.image.url');
     }
 
@@ -121,23 +123,31 @@ class Doctor extends Model
             $message = null;
             $doctor = new Doctor();
             $doctor->name = $request->name;
-            $doctor->email = $request->email;
             $doctor->level_id = $request->level;
             $doctor->description = $request->description ?? null;
             $doctor->introduce = $request->introduce ?? null;
             if ($request->image) {
                 $image = $this->modelProduct->checkImage($request->image);
                 if ($image['status']) {
-                    $newImage = date('Ymdhis') . '.' . $request->image->getClientOriginalExtension();
-                    $doctor->image = $this->url . $newImage;
-                    $request->image->move($this->url, $newImage);
-                    $doctor->save();
-                    $status = true;
-                    $message = Lang::get('message.add_done');
+                    $response = $this->modelUser->addAccount($request);
+                    if ($response["status"] == true){
+                        $newImage = date('Ymdhis') . '.' . $request->image->getClientOriginalExtension();
+                        $doctor->image = $this->url . $newImage;
+                        $request->image->move($this->url, $newImage);
+                        $doctor->user_id =  $response["data"]->id;
+                        $doctor->save();
+                        $status = true;
+                        $message = Lang::get('message.add_done');
+                    } else {
+                        $status = false;
+                        $message = $response["message"];
+                    }
+
                 } else {
                     throw new Exception($image['message']);
                 }
             }
+
         } catch (Exception $e) {
             $status = false;
             $message = $e->getMessage();
@@ -161,7 +171,6 @@ class Doctor extends Model
             $doctor = Doctor::find($id);
             if ($doctor && $doctor->where('active', 1)) {
                 $doctor->name = $request->name;
-                $doctor->email = $request->email;
                 $doctor->level_id = $request->level;
                 if (isset($request->description)) {
                     $doctor->description = $request->description;
@@ -207,5 +216,4 @@ class Doctor extends Model
         $status = true;
         return $this->responseData($status, $message, $data);
     }
-
 }

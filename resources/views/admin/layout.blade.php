@@ -152,6 +152,66 @@
     <script src="{{ asset('plugins/inputmask/jquery.inputmask.min.js') }}"></script>
     <!-- My script -->
     <script src="{{ asset('js/index.js') }}"></script>
+    <script>
+        $('#reservationdate').datetimepicker({
+        format: 'L'
+            });
+$('#startPicker').datetimepicker({
+    format: 'HH:mm', // Định dạng thời gian
+    stepping: 30, // Bước nhảy là 30 phút
+});
+
+$('#endPicker').datetimepicker({
+    format: 'HH:mm', // Định dạng thời gian
+    stepping: 30, // Bước nhảy là 30 phút
+});
+
+// Lắng nghe sự kiện khi người dùng thay đổi giá trị cho datetimepicker bắt đầu nghỉ
+$('#startPicker').on('change.datetimepicker', function(e) {
+    var selectedStartTime = e.date;
+    var selectedHour = selectedStartTime.hours();
+    var selectedMinute = selectedStartTime.minutes();
+
+    // Nếu giờ được chọn nhỏ hơn 8 hoặc lớn hơn hoặc bằng 20
+    if(selectedHour < 8 || selectedHour >= 20 || (selectedHour === 20 && selectedMinute > 0)) {
+        // Thiết lập giờ bắt đầu thành 8:00
+        $('#startPicker').datetimepicker('date', moment().hours(8).minutes(0));
+    }
+
+    // Cập nhật minDate cho datetimepicker kết thúc nghỉ
+    $('#endPicker').datetimepicker('minDate', selectedStartTime);
+
+    // Kiểm tra nếu thời gian kết thúc nhỏ hơn thời gian bắt đầu, điều chỉnh thời gian kết thúc
+    var selectedEndTime = $('#endPicker').datetimepicker('date');
+    if(selectedEndTime && selectedEndTime <= selectedStartTime) {
+        $('#endPicker').datetimepicker('date', selectedStartTime.clone().add(30, 'minutes'));
+    }
+});
+
+// Lắng nghe sự kiện khi người dùng thay đổi giá trị cho datetimepicker kết thúc nghỉ
+$('#endPicker').on('change.datetimepicker', function(e) {
+    var selectedEndTime = e.date;
+    var selectedHour = selectedEndTime.hours();
+    var selectedMinute = selectedEndTime.minutes();
+
+    // Nếu giờ được chọn nhỏ hơn 8 hoặc lớn hơn hoặc bằng 20
+    if(selectedHour < 8 || selectedHour >= 20 || (selectedHour === 20 && selectedMinute > 0)) {
+        // Thiết lập giờ kết thúc thành 20:00
+        $('#endPicker').datetimepicker('date', moment().hours(20).minutes(0));
+    }
+
+    // Cập nhật maxDate cho datetimepicker bắt đầu nghỉ
+    $('#startPicker').datetimepicker('maxDate', selectedEndTime);
+
+    // Kiểm tra nếu thời gian kết thúc nhỏ hơn thời gian bắt đầu ít nhất 30 phút, điều chỉnh thời gian bắt đầu
+    var selectedStartTime = $('#startPicker').datetimepicker('date');
+    if(selectedStartTime && selectedEndTime <= selectedStartTime.clone().add(30, 'minutes')) {
+        $('#startPicker').datetimepicker('date', selectedEndTime.clone().subtract(30, 'minutes'));
+    }
+});
+
+
+    </script>
 </body>
 
 </html>

@@ -19,6 +19,8 @@
                             <p>Trang chủ</p>
                         </a>
                     </li>
+                    <li class="nav-header">Thông tin</li>
+
                     @if(auth()->user()->role->name !== Config::get('auth.roles.doctor'))
                         <li class="nav-header">Thông tin</li>
                         <li class="nav-item">
@@ -242,6 +244,32 @@
     {{--                        </li>--}}
                         @endif
                     @endif
+                    @if(auth()->user()->role->name === Config::get('auth.roles.doctor'))
+                        <li class="nav-item">
+                             <a href="{{ URL::to(route('admin.doctor.reservation')) }}" class="nav-link">
+                                <i class="nav-icon fas fa-bookmark"></i>
+                                <p>
+                                    Lịch hẹn khách hàng
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to(route('admin.reservation_leave.create')) }}" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <p>
+                                   Đăng ký thời gian nghỉ
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to(route('admin.reservation_leave.index')) }}" class="nav-link active">
+                                <i class="nav-icon fas fa-list-ul"></i>
+                                <p>
+                                    Quản lý thời gian nghỉ
+                                </p>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
@@ -255,13 +283,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Danh sách bác sĩ</h1>
+                        <h1 class="m-0">Thời gian đăng ký nghỉ</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ URL::to(route('screen_admin_home')) }}">Trang
                                     chủ</a></li>
-                            <li class="breadcrumb-item active">Danh mục sản phẩm</li>
+                            <li class="breadcrumb-item active">Thời gian đăng ký nghỉ</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -281,53 +309,46 @@
                             @endif
                             <!-- /.card-header -->
                             <div class="card-body">
+                                 <form action="{{ URL::to(route('admin.doctor.reservation')) }}" method="GET">
+                                    <div class="form-group row">
+                                        <label>Chọn thời gian:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" name="date" class="form-control float-right" id="reservation">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                                 <table id="example1" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>Số thứ tự</th>
-                                            <th>Tên bác sĩ</th>
-                                            <th>Email</th>
-                                            <th>Hình ảnh</th>
-                                            <th>Cấp bậc</th>
-                                            <th>Thao tác</th>
+                                            <th>Ngày</th>
+                                            <th>Thời gian bắt đầu nghỉ</th>
+                                            <th>Thời gian kết thúc nghỉ</th>
+                                            <th>Trạng thái</th>
+                                            <th>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php $i = 1; ?>
-                                        @foreach ($doctors as $key => $doctor)
-                                            <tr>
-                                                <td>{{ $i++ }}</td>
-                                                <td>{{ $doctor->name }}</td>
-                                                <td>{{ $doctor->user->email }}</td>
-                                                <td>
-                                                    @if ($doctor->image)
-                                                        <img class="img-ctr" src="{{ asset('' . $doctor->image) }}" />
-                                                    @else
-                                                        <img class="img-ctr" src="{{ asset('' . Config::get('app.image.default')) }}"/><img>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $doctor->levelDoctor->name }}</td>
-                                                <td class="act">
-                                                    <div class="row pd-12">
-                                                        <a
-                                                            href="{{ URL::to(route('admin.doctor.edit', ['doctor' => $doctor->id])) }}">
-                                                            <i class="fas fa-edit ico"></i>
-                                                        </a>
-                                                        <form
-                                                            action="{{ URL::to(route('admin.doctor.destroy', ['doctor' => $doctor->id])) }}"
-                                                                method="POST">
-                                                            @csrf
-                                                            <input name="_method" type="hidden" value="DELETE">
-                                                            <button
-                                                                onclick="return confirm( '{{ Lang::get('message.do_u_delete') }} {{ $doctor->name }}?');"
-                                                                class="btn-ico" type="submit"><i
-                                                                    class="text-danger fas fa-trash-alt ico"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+{{--                                        <?php $i = 1; ?>--}}
+{{--                                        @foreach ($reservations as $key => $reservation)--}}
+{{--                                            <tr>--}}
+{{--                                                <td>{{ $i++ }}</td>--}}
+{{--                                                <td>{{ $reservation->name }}</td>--}}
+{{--                                                <td>{{ $reservation->phone }}</td>--}}
+{{--                                                <td>{{ $reservation->service->name ?? '' }}</td>--}}
+{{--                                                <td>{{ $reservation->date }}</td>--}}
+{{--                                                <td>{{ $reservation->time }}</td>--}}
+{{--                                                <td>{{ $reservation->message }}</td>--}}
+{{--                                            </tr>--}}
+{{--                                        @endforeach--}}
                                     </tbody>
                                 </table>
                             </div>

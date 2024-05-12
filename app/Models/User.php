@@ -31,7 +31,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
         'username',
         'phone',
         'role_id',
@@ -140,19 +139,19 @@ class User extends Authenticatable
             $role = Role::where('name', Config::get('auth.roles.admin'))->first();
             $account = new User();
             $account->name = $request->name;
-            $account->email = $request->email;
             $account->username = $request->username;
             $account->phone = $request->phone;
             $account->password = Hash::make('123456');
             $account->role_id = $role->id;
             $account->save();
             $status = true;
+            $data = $account;
             $message = Lang::get('message.add_done');
         } catch (Exception $e) {
             $status = false;
             $message = $e->getMessage();
         }
-        return $this->responseData($status, $message);
+        return $this->responseData($status, $message, $data);
     }
 
     /**

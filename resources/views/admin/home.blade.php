@@ -217,7 +217,7 @@
                                 <p>Thống kê khách hàng</p>
                             </a>
                         </li>
-                        @if(auth()->user()->role->name === Config::get('auth6.roles.manager'))
+                        @if(auth()->user()->role->name === Config::get('auth.roles.manager'))
                         <li class="nav-header">Tài khoản</li>
                         <li class="nav-item">
                             <a href="{{ URL::to(route('admin.account.index')) }}" class="nav-link">
@@ -267,10 +267,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{ URL::to(route('admin.reservation_leave.create')) }}" class="nav-link">
                                 <i class="nav-icon fas fa-calendar-alt"></i>
                                 <p>
                                    Đăng ký thời gian nghỉ
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ URL::to(route('admin.reservation_leave.index')) }}" class="nav-link">
+                                <i class="nav-icon fas fa-list-ul"></i>
+                                <p>
+                                    Quản lý thời gian nghỉ
                                 </p>
                             </a>
                         </li>

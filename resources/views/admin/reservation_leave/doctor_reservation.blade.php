@@ -246,7 +246,7 @@
                     @endif
                     @if(auth()->user()->role->name === Config::get('auth.roles.doctor'))
                         <li class="nav-item">
-                             <a href="{{ URL::to(route('admin.reservation_leave.index')) }}" class="nav-link active">
+                             <a href="{{ URL::to(route('admin.doctor.reservation')) }}" class="nav-link active">
                                 <i class="nav-icon fas fa-bookmark"></i>
                                 <p>
                                     Lịch hẹn khách hàng
@@ -262,7 +262,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{ URL::to(route('admin.reservation_leave.index')) }}" class="nav-link">
                                 <i class="nav-icon fas fa-list-ul"></i>
                                 <p>
                                     Quản lý thời gian nghỉ

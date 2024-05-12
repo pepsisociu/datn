@@ -297,7 +297,7 @@
                                                 <span class="input-group-text"><i class="fas fa-address-card"></i></span>
                                             </div>
                                             <input type="text" name="name" class="form-control" id="exampleInputEmail1"
-                                                value="{{ $doctor->name }}" placeholder="Nhập vào tên danh mục">
+                                                value="{{ $doctor->name }}" placeholder="Nhập vào tên bác sĩ">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -306,8 +306,8 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                                             </div>
-                                            <input type="text" name="email" class="form-control" id="exampleInputEmail1"
-                                                value="{{ $doctor->email }}" placeholder="Nhập vào email">
+                                            <input disabled type="text" name="email" class="form-control" id="exampleInputEmail1"
+                                                value="{{ $doctor->user->email }}" placeholder="Nhập vào email">
                                         </div>
                                     </div>
                                     <div class="form-group">
