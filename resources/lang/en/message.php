@@ -45,5 +45,7 @@ return [
     'quantity_more_than_1' => 'Số lượng phải lớn hơn 1',
     'exist_reservation' => 'Lịch này đã được đặt, hãy đặt lịch khác',
     'done_reservation' => 'Đặt lịch thành công',
-    'notification_reservation' => 'Thông báo lịch khám'
+    'notification_reservation' => 'Thông báo lịch khám',
+    'conflict_reservation' => 'Thời gian nghỉ bị trùng. Hãy cập nhật các lịch khám ở dưới',
+    'add_conflict_reservation' => 'Thời gian nghỉ đã xung đột với thời gian nghỉ trước đó. Hãy kiểm tra lại'
 ];

@@ -39,10 +39,16 @@ class ReservationLeaveController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->checkRoleDoctor();
-        return view('admin.reservation_leave.reservation_leave');
+        $response = $this->model->getReservationLeave($request);
+        if (!$response['status']) {
+            $message = $response['message'];
+            return back()->with('message', $message);
+        }
+        $reservationLeave = $response["data"];
+        return view('admin.reservation_leave.reservation_leave', compact('reservationLeave'));
     }
 
     /**
@@ -71,6 +77,15 @@ class ReservationLeaveController extends Controller
             $response['status'] = true;
             $response = $this->model->addReservationLeave($request);
             $message = $response["message"];
+            if ($response['status']) {
+                return redirect(route('admin.reservation_leave.index'))->with('message', $message)->with('conflictReservation', $response['data']['conflictReservation']);
+            } else {
+                if($response["data"] != null){
+                    return redirect(route('admin.reservation_leave.edit', ['doctor_reservation' => $response["data"]["id"]]))->with('message', $message);
+                } else {
+                    return back()->with('message', $message);
+                }
+            }
         } catch (Exception $e) {
             $message = $e->getMessage();
         }
@@ -97,15 +112,15 @@ class ReservationLeaveController extends Controller
      */
     public function edit($id)
     {
-        $this->checkRoleAdmin();
-        $response = $this->model->getService($id);
+        $this->checkRoleDoctor();
+        $response = $this->model->getReservationLeaveById($id);
         if (!$response['status']) {
             $message = $response['message'];
-            return redirect(route('admin.service.index'))->with('message', $message);
+            return back()->with('message', $message);
         }
-        $service = $response['data'];
-        $workTimes = Service::WORKTIME;
-        return view('admin.service.service_edit', compact('service', 'workTimes'));
+        $reservationLeave = $response['data']['data'];
+        $conflictingReservations = $response['data']['conflictingReservations'];
+        return view('admin.reservation_leave.reservation_leave_edit', compact('reservationLeave', 'conflictingReservations'));
     }
 
     /**
@@ -118,17 +133,20 @@ class ReservationLeaveController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($this->checkRoleAdmin()) {
-                $this->validateService($request);
-                $response = $this->model->updateService($request, $id);
+            if ($this->checkRoleDoctor()) {
+                $response = $this->model->updateReservationLeave($request, $id);
                 $message = $response['message'];
+                if ($response['data']['data'] != null && isset($response['data']['data']['status']) && !$response['data']['data']['status']) {
+                    return back()->with('message', $message);
+                } else {
+                    return redirect(route('admin.reservation_leave.index'))->with('message', $message);
+                }
             } else {
                 throw new RoleAdminException();
             }
         } catch (Exception $e) {
             $message = $e->getMessage();
         }
-        return redirect(route('admin.service.edit', ['service' => $id]))->with('message', $message);
     }
 
     /**
@@ -139,6 +157,8 @@ class ReservationLeaveController extends Controller
      */
     public function destroy($id)
     {
+        $this->checkRoleDoctor();
+        $this->model->destroy($id);
         return back();
     }
 

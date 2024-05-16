@@ -64,6 +64,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
     ];
 
     private $model;
+    private $modelReservationLeave;
     private $url;
 
     /**
@@ -74,6 +75,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
     public function __construct()
     {
         $this->url = Config::get('app.image.url');
+        $this->modelReservationLeave = new ReservationLeave();
     }
 
     /**
@@ -173,33 +175,52 @@ const TIME_ACCEPT = ["08:00", "08:30",
         return $this->responseData($status, $message, $data);
     }
 
-    public function getFreeTime($request)
+    public function getFreeTime($request): array
     {
-        $reservation = Reservation::where('date', $request->date)->where('doctor_id', $request->doctor_id)->where('status', 1)->get();
-        $timeReservation = [];
-        $serviceReq = Service::where('id', $request->service_id)->first();
-        foreach ($reservation as $key => $resv) {
-            $timeDefault = Carbon::createFromFormat("H:i:m", "00:30:00");
-            $timeService = Carbon::createFromFormat("H:i:m", $resv->service->work_time);
-            $timeMain = $resv->time;
-            $dateTimeMain = Carbon::createFromFormat("H:i:m", $timeMain);
-            $dateTimeMainToUp = Carbon::createFromFormat("H:i:m", $timeMain);
-            $dateTimeMainToDown = Carbon::createFromFormat("H:i:m", $timeMain);
-            $timeReservation[] = $dateTimeMain->format('H:i');
-            if ($timeService->greaterThan($timeDefault)) {
-                while ($timeService->greaterThan($timeDefault)) {
-                    $timeEnd = $dateTimeMainToDown->addMinutes(30)->format("H:i");
-                    $timeReservation[] = $timeEnd;
-                    $timeService->subMinutes(30);
-                }
-            }
+        return $this->getFreeTimeDoctor($request->doctor_id, $request->date, $request->service_id);
+    }
 
-            $timeServiceReq = Carbon::createFromFormat("H:i:m", $serviceReq->work_time);
-            if ($timeServiceReq->greaterThan($timeDefault)) {
-                while ($timeServiceReq->greaterThan($timeDefault)) {
-                    $timeUp = $dateTimeMainToUp->subMinutes(30)->format("H:i");
-                    $timeReservation[] = $timeUp;
-                    $timeServiceReq->subMinutes(30);
+    public function getFreeTimeDoctor($doctorId, $date, $serviceId): array
+    {
+        $busyTime = $this->modelReservationLeave->getDoctorLeave($doctorId, $date);
+        $reservation = Reservation::where('date', $date)->where('doctor_id', $doctorId)->where('status', 1)->get();
+        $timeReservation = [];
+        if ($serviceId) {
+            $serviceReq = Service::where('id', $serviceId)->first();
+        }
+
+        foreach ($reservation as $resv) {
+            $timeService = Carbon::createFromFormat("H:i:s", $resv->service->work_time);
+            $timeMain = Carbon::createFromFormat("H:i:s", $resv->time);
+            $timeReservation[] = $timeMain->format('H:i');
+
+            while ($timeService->greaterThan('00:30:00')) {
+                $timeMain->addMinutes(30);
+                $timeReservation[] = $timeMain->format('H:i');
+                $timeService->subMinutes(30);
+            }
+        }
+
+        foreach ($busyTime as $busy) {
+            $startTime = Carbon::createFromFormat("H:i:s", $busy->start_time);
+            $endTime = Carbon::createFromFormat("H:i:s", $busy->end_time);
+
+            while ($startTime->lessThan($endTime)) {
+                $timeReservation[] = $startTime->format('H:i');
+                $startTime->addMinutes(30);
+            }
+        }
+
+        if ($serviceId != null) {
+            $timeServiceReq = Carbon::createFromFormat("H:i:s", $serviceReq->work_time);
+            if ($timeServiceReq->greaterThan('00:30:00')) {
+                foreach ($timeReservation as $time) {
+                    $timeMain = Carbon::createFromFormat("H:i", $time);
+                    while ($timeServiceReq->greaterThan('00:30:00')) {
+                        $timeMain->subMinutes(30);
+                        $timeReservation[] = $timeMain->format('H:i');
+                        $timeServiceReq->subMinutes(30);
+                    }
                 }
             }
         }
@@ -208,7 +229,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
             return date('H:i', strtotime($time));
         });
         $diff = array_diff(self::TIME_ACCEPT, $time->toArray());
-        return array_values($diff);;
+        return array_values($diff);
     }
 
     public function createReservation($request) {
