@@ -72,7 +72,7 @@ class AdminController extends Controller
         try {
             $this->checkRoleManager();
             $this->validateAccount($request);
-            $response = $this->model->addAccount($request);
+            $response = $this->model->addAccount($request, 'admin');
             $message = $response['message'];
         } catch (Exception $e) {
             $message = $e->getMessage();

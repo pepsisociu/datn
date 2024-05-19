@@ -122,7 +122,7 @@ class User extends Authenticatable
      * @param $request
      * @return array
      */
-    public function addAccount($request)
+    public function addAccount($request, $role)
     {
         try {
             if (User::where('email', $request->email)->first()) {
@@ -136,13 +136,16 @@ class User extends Authenticatable
                 return $this->responseData($status, $message);
             }
 
-            $role = Role::where('name', Config::get('auth.roles.admin'))->first();
+            $roleUser = Role::where('name', Config::get('auth.roles.admin'))->first();
+            if ($role != 'admin') {
+                $roleUser = Role::where('name', Config::get('auth.roles.doctor'))->first();
+            }
             $account = new User();
             $account->name = $request->name;
             $account->username = $request->username;
             $account->phone = $request->phone;
             $account->password = Hash::make('123456');
-            $account->role_id = $role->id;
+            $account->role_id = $roleUser->id;
             $account->save();
             $status = true;
             $data = $account;

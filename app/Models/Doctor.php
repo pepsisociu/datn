@@ -129,7 +129,7 @@ class Doctor extends Model
             if ($request->image) {
                 $image = $this->modelProduct->checkImage($request->image);
                 if ($image['status']) {
-                    $response = $this->modelUser->addAccount($request);
+                    $response = $this->modelUser->addAccount($request, 'doctor');
                     if ($response["status"] == true){
                         $newImage = date('Ymdhis') . '.' . $request->image->getClientOriginalExtension();
                         $doctor->image = $this->url . $newImage;
