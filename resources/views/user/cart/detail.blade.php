@@ -61,9 +61,29 @@
                             @endif
                         @endforeach
                     @endforeach
+                    <style>
+                        #map {
+                          height: 500px;
+                          width: 100%;
+                        }
+                        #pac-input {
+                          margin-top: 10px;
+                          width: 300px;
+                          height: 30px;
+                          padding: 0 12px;
+                          font-size: 16px;
+                          border: 1px solid #d9d9d9;
+                          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+                          z-index: 5;
+                          position: absolute;
+                          left: 50%;
+                          transform: translateX(-50%);
+                        }
+                    </style>
                 <button type="submit" class="btn btn-primary mt-2 d-flex justify-content-center">
                     Xác nhận
                 </button>
+                    <div id="map" style="height: 600px; width: 90%;"></div>
             </form>
             </div>
             @if (isset($product))
@@ -136,5 +156,76 @@
                 </div>
             @endif
         </div>
+            <script>
+        let map;
+        let destinationMarker;
+        let directionsService;
+        let directionsRenderer;
+
+    function initMap() {
+        const uluru = {
+            lat: 10.84571529688809,
+            lng: 106.79417640174958
+        };
+
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 18,
+            center: uluru,
+        });
+
+        destinationMarker = new google.maps.Marker({
+            map: map,
+            animation: google.maps.Animation.DROP,
+            position: uluru
+        });
+
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        destinationMarker.addListener('dragend', function() {
+            calculateAndDisplayRoute();
+        });
+
+        map.addListener('click', function(event) {
+            placeMarker(event.latLng);
+        });
+    }
+
+    function placeMarker(location) {
+        if (destinationMarker) {
+            destinationMarker.setPosition(location);
+        } else {
+            destinationMarker = new google.maps.Marker({
+                position: location,
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP
+            });
+        }
+        calculateAndDisplayRoute();
+    }
+
+    function calculateAndDisplayRoute() {
+        const start = map.getCenter();
+        const end = destinationMarker.getPosition();
+
+        const request = {
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+    };
+
+    directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+            directionsRenderer.setDirections(result);
+        } else {
+            window.alert('Directions request failed due to ' + status);
+        }
+    });
+}
+
+    </script>
+        <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
     </section>
 @endsection

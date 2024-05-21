@@ -45,7 +45,7 @@
                                     sĩ</label>
                                 <select class="form-control" onchange="loadTime()" required
                                         style="background-color: white; color: black" name="doctor_id">
-                                    <option value=""> Chọn bác sĩ</option>
+                                    <option value="0"> Chọn bác sĩ</option>
                                     @foreach ($doctors as $key => $doctor)
                                         <option value="{{ $doctor->id }}">{{$doctor->levelDoctor->name}}
                                             - {{ $doctor->name }} </option>
@@ -83,7 +83,7 @@
             while (time.firstChild) {
                 time.removeChild(time.firstChild);
             }
-            if (doctor_id && date && service) {
+            if (date && service) {
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {

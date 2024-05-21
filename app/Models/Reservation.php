@@ -251,11 +251,13 @@ const TIME_ACCEPT = ["08:00", "08:30",
             $reser->message = $request['message'] ?? null;
             $reser->save();
             $status = true;
-            $data = array("name" => $reser->doctor->name, "time" => $reser->time  ,"date" => $reser->date, "email" => $reser->doctor->email, "service" => $reser->service->name);
+            if ($request['doctor_id'] != 0) {
+                $data = array("name" => $reser->doctor->name, "time" => $reser->time  ,"date" => $reser->date, "email" => $reser->doctor->email, "service" => $reser->service->name);
+                Mail::send('mail.mail_reservation', $data, function ($messages) use ($data) {
+                    $messages->to($data['email'])->subject(Lang::get('message.notification_reservation'));
+                });
+            }
             $message = Lang::get('message.done_reservation');
-            Mail::send('mail.mail_reservation', $data, function ($messages) use ($data) {
-                $messages->to($data['email'])->subject(Lang::get('message.notification_reservation'));
-            });
         }
         return $this->responseData($status, $message, $data);
     }
