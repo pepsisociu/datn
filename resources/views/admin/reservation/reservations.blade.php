@@ -330,7 +330,7 @@
                                             <tr>
                                                 <td>{{ $i++ }}</td>
                                                 <td>{{ $reservation->date }}</td>
-                                                <td>{{ $reservation->doctor->name }}</td>
+                                                <td>{{ $reservation->doctor->name  ?? ""}}</td>
                                                 <td>{{ $reservation->user->name ?? $reservation->name }}</td>
                                                 <td>{{ $reservation->service->name ?? null}}</td>
                                                 <td>{{ $reservation->user->phone ?? $reservation->phone }}</td>
