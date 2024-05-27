@@ -74,9 +74,9 @@
                         <button type="submit" class="btn btn-primary px-4">Tìm kiếm</button>
                     </form>
                         <h4>Các sản phẩm có thể bạn quan tâm</h4>
-                       @foreach ($productsRelate as $key => $product)
                        <div class="col-md-6 wow slideInUp" data-wow-delay="0.1s" style="width: 100%; padding-top: 30px">
-                            <a href="{{ URL::to(route('detail_product', ['id' => $product->id])) }}" class="blog-item bg-light rounded overflow-hidden row" style="background: transparent!important;">
+                            @foreach ($productsRelate as $key => $product)
+                            <a href="{{ URL::to(route('detail_product', ['id' => $product->id])) }}" class="blog-item bg-light rounded overflow-hidden row" style="margin-top: 30px; background: transparent!important;">
                                 <div class="blog-img position-relative overflow-hidden d-flex col-5"> <!-- Thêm class d-flex và justify-content-center, align-items-center -->
                                     <img class="img-fluid" src="{{ asset('' . $product->image) }}" alt="" style="max-width: 100%;"> <!-- Thêm style max-width để hình ảnh không quá to -->
                                 </div>
@@ -92,6 +92,7 @@
                                     </h4>
                                 </div>
                             </a>
+                            @endforeach
                        </div>
                 </div>
             </div>
@@ -99,7 +100,6 @@
     </a>
 </div>
 
-                    @endforeach
                 </div>
                 <!-- Sidebar End -->
             </div>
