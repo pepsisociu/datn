@@ -132,13 +132,13 @@
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <p class="fw-bold">Phí giao hàng</p>
-                                            <p class="fw-bold">
+                                            <p class="fw-bold" id="shipping-fee">
                                                 {{ Lang::get('message.before_unit_money') . number_format(30000, 0, ',', '.') . Lang::get('message.after_unit_money') }}
                                             </p>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <p class="fw-bold">Tổng cộng</p>
-                                            <p class="fw-bold">
+                                            <p class="fw-bold" id="total-amount">
                                                 {{ Lang::get('message.before_unit_money') . number_format($total + 30000, 0, ',', '.') . Lang::get('message.after_unit_money') }}
                                             </p>
                                         </div>
@@ -223,8 +223,27 @@
             window.alert('Directions request failed due to ' + status);
         }
     });
+
 }
 
+    </script>
+    <script>
+        document.getElementById('address').addEventListener('input', function() {
+            const address = this.value.toLowerCase();
+            const shippingFeeElement = document.getElementById('shipping-fee');
+            const totalAmountElement = document.getElementById('total-amount');
+            const totalAmount = document.getElementById('total');
+
+            let shippingFee = 50000;
+
+            if (address.includes('hcm') || address.includes('hồ chí minh') || address.includes('ho chi minh')) {
+                shippingFee = 30000;
+            }
+
+            shippingFeeElement.textContent = '{{ Lang::get('message.before_unit_money') }}' + shippingFee.toLocaleString() + '{{ Lang::get('message.after_unit_money') }}';
+            const total = {{ $total }} + shippingFee;
+            totalAmountElement.textContent = '{{ Lang::get('message.before_unit_money') }}' + total.toLocaleString() + '{{ Lang::get('message.after_unit_money') }}';
+        });
     </script>
         <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
     </section>

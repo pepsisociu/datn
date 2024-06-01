@@ -445,7 +445,14 @@ class InvoiceExport extends Model
 
             $invoiceExport->is_pay_cod = $request->is_pay_cod;
             $invoiceExport->is_payment = 0;
-            $invoiceExport->need_pay = $request->into_money + 30000;
+            $shippingFee = 50000;
+            $addressCus = strtolower($request->address);
+            if (stripos($addressCus, 'hcm') !== false ||
+                stripos($addressCus, 'hồ chí minh') !== false ||
+                stripos($addressCus, 'ho chi minh') !== false) {
+                $shippingFee = 30000;
+            }
+            $invoiceExport->need_pay = $request->into_money + $shippingFee;
             if ($request->is_pay_cod == 0) {
                 $invoiceExport->is_payment = 1;
                 $invoiceExport->need_pay = 0;
