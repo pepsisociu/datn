@@ -78,6 +78,7 @@ Route::prefix('admin')->group(function () {
 
         //Doctor control
         Route::get('doctor-reservation-customer',           [DoctorController::class, 'getReservation'])                ->name('admin.doctor.reservation');
+        Route::get('doctor-reservation-confirm/{id}',       [DoctorController::class, 'reservationConfirm'])            ->name('admin.doctor.reservation.confirm');
     });
 });
 

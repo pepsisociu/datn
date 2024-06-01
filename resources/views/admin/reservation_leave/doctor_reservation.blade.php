@@ -335,6 +335,8 @@
                                             <th>Ngày</th>
                                             <th>Thời gian</th>
                                             <th>Lời nhắn</th>
+                                            <th>Trạng thái</th>
+                                            <th>Xác nhận</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -348,6 +350,17 @@
                                                 <td>{{ $reservation->date }}</td>
                                                 <td>{{ $reservation->time }}</td>
                                                 <td>{{ $reservation->message }}</td>
+                                                @if( $reservation->doctor_confirm_status ==0)
+                                                    <td style="font-weight: bold; color: red">Chưa Hoàn thành</td>
+                                                    <td><a
+                                                        href="{{ URL::to(route('admin.doctor.reservation.confirm', ['id' => $reservation->id])) }}">
+                                                        <i class="fas fa-check ico" style="color: green"></i>
+                                                    </a></td>
+                                                @else
+                                                    <td style="font-weight: bold; color: blue">Đã Hoàn thành</td>
+                                                    <td></td>
+                                                @endif
+
                                             </tr>
                                         @endforeach
                                     </tbody>

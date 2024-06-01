@@ -61,6 +61,7 @@ const TIME_ACCEPT = ["08:00", "08:30",
         'time',
         'message',
         'status',
+        'doctor_confirm_status',
     ];
 
     private $model;

@@ -216,4 +216,14 @@ class Doctor extends Model
         $status = true;
         return $this->responseData($status, $message, $data);
     }
+
+    public function reservationConfirm($id) {
+        $data = null;
+        $reser = Reservation::find($id);
+        $reser->doctor_confirm_status = 1;
+        $reser->save();
+        $message = Lang::get('message.update_done');
+        $status = true;
+        return $this->responseData($status, $message, $data);
+    }
 }

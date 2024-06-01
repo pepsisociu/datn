@@ -195,4 +195,14 @@ class DoctorController extends Controller
         $message = $response['message'];
         return view('admin.reservation_leave.doctor_reservation', compact('message', 'reservations'));
     }
+
+    public function reservationConfirm($id) {
+        $this->checkRoleDoctor();
+        $response['data'] = [];
+        $response['message'] = null;
+        $response['status'] = true;
+        $response = $this->model->reservationConfirm($id);
+        $message = $response['message'];
+        return back()->with('message', $message);
+    }
 }
