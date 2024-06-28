@@ -47,5 +47,6 @@ return [
     'done_reservation' => 'Đặt lịch thành công',
     'notification_reservation' => 'Thông báo lịch khám',
     'conflict_reservation' => 'Thời gian nghỉ bị trùng. Hãy cập nhật các lịch khám ở dưới',
-    'add_conflict_reservation' => 'Thời gian nghỉ đã xung đột với thời gian nghỉ trước đó. Hãy kiểm tra lại'
+    'add_conflict_reservation' => 'Thời gian nghỉ đã xung đột với thời gian nghỉ trước đó. Hãy kiểm tra lại',
+    'time_in_past' => 'Thời gian này đã ở quá khứ, hãy chọn lại.'
 ];

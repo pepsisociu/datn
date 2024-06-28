@@ -9,6 +9,7 @@ use App\Traits\ResponseTraits;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Config;
 use Exception;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Lang;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -237,28 +238,39 @@ const TIME_ACCEPT = ["08:00", "08:30",
         $status = false;
         $message = null;
         $data = null;
-        $freetime = $this->getFreeTime($request);
-        if (Reservation::where([['doctor_id', $request['doctor_id']], ['date', $request['date']], ['time', $request['time']]])->first() || !in_array($request['time'], $freetime)) {
-            $message = Lang::get('message.exist_reservation');
+        $date = $request['date'];
+        $time = $request['time'];
+
+        $dateTimeString = $date . ' ' . $time;
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', $dateTimeString);
+        $now = Carbon::now();
+        if ($dateTime->lt($now)) {
+            $message = Lang::get('message.time_in_past');
+
         } else {
-            $reser = new Reservation();
-            $reser->doctor_id = $request['doctor_id'];
-            $reser->user_id = $request['user_id'] ?? null;
-            $reser->name = $request['name'];
-            $reser->phone = $request['phone'];
-            $reser->date = $request['date'];
-            $reser->time = $request['time'];
-            $reser->service_id = $request['service_id'];
-            $reser->message = $request['message'] ?? null;
-            $reser->save();
-            $status = true;
-            if ($request['doctor_id'] != 0) {
-                $data = array("name" => $reser->doctor->name, "time" => $reser->time  ,"date" => $reser->date, "email" => $reser->doctor->email, "service" => $reser->service->name);
-                Mail::send('mail.mail_reservation', $data, function ($messages) use ($data) {
-                    $messages->to($data['email'])->subject(Lang::get('message.notification_reservation'));
-                });
+            $freetime = $this->getFreeTime($request);
+            if (Reservation::where([['doctor_id', $request['doctor_id']], ['date', $request['date']], ['time', $request['time']]])->first() || !in_array($request['time'], $freetime)) {
+                $message = Lang::get('message.exist_reservation');
+            } else {
+                $reser = new Reservation();
+                $reser->doctor_id = $request['doctor_id'];
+                $reser->user_id = $request['user_id'] ?? null;
+                $reser->name = $request['name'];
+                $reser->phone = $request['phone'];
+                $reser->date = $request['date'];
+                $reser->time = $request['time'];
+                $reser->service_id = $request['service_id'];
+                $reser->message = $request['message'] ?? null;
+                $reser->save();
+                $status = true;
+                if ($request['doctor_id'] != 0 && isset($reser->doctor->email)) {
+                    $data = array("name" => $reser->doctor->name, "time" => $reser->time  ,"date" => $reser->date, "email" => $reser->doctor->email, "service" => $reser->service->name);
+                    Mail::send('mail.mail_reservation', $data, function ($messages) use ($data) {
+                        $messages->to($data['email'])->subject(Lang::get('message.notification_reservation'));
+                    });
+                }
+                $message = Lang::get('message.done_reservation');
             }
-            $message = Lang::get('message.done_reservation');
         }
         return $this->responseData($status, $message, $data);
     }
